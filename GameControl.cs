@@ -7,7 +7,22 @@ using System;
 
 public class GameControl : MonoBehaviour {
     public static SerialPort stream = new SerialPort("COM5", 9600);
+    public static int SceneCount = 0;
+    public static bool Button1 = false;
 
+    public static string[] animals = new string[]
+    {
+        "Bear",
+        "Squirrel",
+        "Sheep",
+        "Monkey",
+        "Rhino",
+        "Giraffe",
+        "Snake",
+        "Deer",
+        "Lion",
+        "Elephant"
+    };
 
     // Use this for initialization
     void Start()
@@ -22,7 +37,7 @@ public class GameControl : MonoBehaviour {
         StartCoroutine
             (
                     AsynchronousReadFromArduino
-                    ((string s) => Debug.Log(s),     // Callback
+                    ((string s) => InputHandler(s),     // Callback
                     () => Debug.LogError("Error!"), // Error callback
                     10000f                          // Timeout (milliseconds)
             )
@@ -71,5 +86,9 @@ public class GameControl : MonoBehaviour {
     {
         stream.WriteLine(message);
         stream.BaseStream.Flush();
+    }
+    public void InputHandler(string data)
+    {
+
     }
 }
