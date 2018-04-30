@@ -8,7 +8,8 @@ using System;
 public class GameControl : MonoBehaviour {
     public static SerialPort stream = new SerialPort("COM5", 9600);
     public static int SceneCount = 0;
-    public static bool Button1 = false;
+    public static bool Button1 = false,Button2 = false, Button3 =false, Button4 = false,Button5 = false;
+    public static int Button1count = 0, Button2count = 0, Button3count = 0, Button4count = 0, Button5count = 0;
 
     public static string[] animals = new string[]
     {
@@ -89,6 +90,27 @@ public class GameControl : MonoBehaviour {
     }
     public void InputHandler(string data)
     {
-
+        Debug.Log(data);
+        if (data == "button1press")
+        {
+            Button1count += 1;
+        }
+        else if (data == "button2press")
+        {
+            Button2count += 1;
+        }
+        else if (data == "button3press")
+        {
+            Button3count += 1;
+        }
+        else if (data == "button4press")
+        {
+            Button4count += 1;
+        }
+        else if (data == "button5press")
+        {
+            Button5count += 1;
+        }
+        
     }
 }
