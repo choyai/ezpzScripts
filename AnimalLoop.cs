@@ -36,21 +36,26 @@ public class AnimalLoop : MonoBehaviour {
         //videoPlayer.frame = 100;
 
         // Restart from beginning when done.
-        videoPlayer.isLooping = false;
+        videoPlayer.isLooping = true;
 
         // Each time we reach the end, we slow down the playback by a factor of 10.
-        //videoPlayer.loopPointReached += EndReached;
+        videoPlayer.loopPointReached += EndReached;
 
         // Start playback. This means the VideoPlayer may have to prepare (reserve
         // resources, pre-load a few frames, etc.). To better control the delays
         // associated with this preparation one can use videoPlayer.Prepare() along with
         // its prepareCompleted event.
         videoPlayer.Play();
+        videoPlayer.Prepare();
     }
 
     // Update is called once per frame
     void Update()
     {
 
+    }
+    public void EndReached(UnityEngine.Video.VideoPlayer vp)
+    {
+        vp.Prepare();
     }
 }
