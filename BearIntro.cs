@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class AnimalIntro : MonoBehaviour
+public class BearIntro : MonoBehaviour
 {
     void Start()
     {
@@ -24,7 +24,7 @@ public class AnimalIntro : MonoBehaviour
 
         // Set the video to play. URL supports local absolute or relative paths.
         // Here, using absolute.
-        videoPlayer.url = "Assets/Movies/" + GameControl.CurrentAnimal + "Intro.mp4";
+        videoPlayer.url = "Assets/Movies/" + "Bear" + "Intro.mp4";
 
         // Skip the first 100 frames.
         //videoPlayer.frame = 100;

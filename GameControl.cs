@@ -5,47 +5,54 @@ using System.IO.Ports;
 using UnityEngine.SceneManagement;
 using System;
 
-public class GameControl : MonoBehaviour {
-    public static SerialPort stream = new SerialPort("COM5", 9600);
+public class GameControl : MonoBehaviour
+{
+    public static SerialPort stream = new SerialPort("COM7", 9600);
     public static int SceneCount = 0;
-    public static bool Button1 = false,Button2 = false, Button3 =false, Button4 = false,Button5 = false;
+    public static string CurrentAnimal = "";
+    public static bool Button1 = false, Button2 = false, Button3 = false, Button4 = false, Button5 = false;
     public static int Button1count = 0, Button2count = 0, Button3count = 0, Button4count = 0, Button5count = 0;
-
     public static string[] animals = new string[]
     {
         "Bear",
-        "Squirrel",
-        "Sheep",
-        "Monkey",
+        //"Squirrel",
+        //"Sheep",
+        //"Monkey",
         "Rhino",
-        "Giraffe",
-        "Snake",
-        "Deer",
-        "Lion",
-        "Elephant"
+        //"Giraffe",
+        //"Snake",
+        //"Deer",
+        //"Lion",
+        //"Elephant"
     };
+
+    public static List<string> Animals = new List<string>(animals);
 
     // Use this for initialization
     void Start()
     {
         stream.ReadTimeout = 50;
         stream.Open();
+        //DontDestroyOnLoad(this.gameObject);
     }
 
     // Update is called once per frame
     void Update()
     {
         StartCoroutine
-            (
-                    AsynchronousReadFromArduino
-                    ((string s) => InputHandler(s),     // Callback
-                    () => Debug.LogError("Error!"), // Error callback
-                    10000f                          // Timeout (milliseconds)
-            )
+        (
+                AsynchronousReadFromArduino
+                        ((string s) => InputHandler(s), // Callback
+                        () => Debug.LogError("Error!"), // Error callback
+                        10000f                      // Timeout (milliseconds)
+                        )
         );
-        WriteToArduino("yo");
     }
 
+    private void OnGUI()
+    {
+        GUILayout.Label("Press Enter To Advance");
+    }
 
     public IEnumerator AsynchronousReadFromArduino(Action<string> callback, Action fail = null, float timeout = float.PositiveInfinity)
     {
@@ -111,6 +118,6 @@ public class GameControl : MonoBehaviour {
         {
             Button5count += 1;
         }
-        
+
     }
 }
