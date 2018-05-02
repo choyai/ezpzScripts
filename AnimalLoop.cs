@@ -21,15 +21,16 @@ public class AnimalLoop : MonoBehaviour
                 AsynchronousReadFromArduino
                         ((s) => InputHandler(s), // Callback
                         () => Debug.LogError("Error!"), // Error callback
-                        10000f                      // Timeout (milliseconds)
+                        50f                      // Timeout (milliseconds)
                         )
         );
-        Debug.Log(GameControl.Button1Count);
+        Debug.Log(message: GameControl.Button1Count);
     }
     private void OnGUI()
     {
         if (Event.current.Equals(Event.KeyboardEvent("return")))
         {
+            Debug.LogError("please");
             WriteToArduino("button1press");
             WriteToArduino("button2press");
             WriteToArduino("button3press");
@@ -47,6 +48,8 @@ public class AnimalLoop : MonoBehaviour
         DateTime nowTime;
         TimeSpan diff = default(TimeSpan);
 
+        Debug.Log("We doing this");
+
         string dataString = null;
 
         do
@@ -54,6 +57,7 @@ public class AnimalLoop : MonoBehaviour
             try
             {
                 dataString = GameControl.stream.ReadLine();
+                Debug.Log(dataString);
             }
             catch (TimeoutException)
             {
@@ -66,7 +70,7 @@ public class AnimalLoop : MonoBehaviour
                 yield return null;
             }
             else
-                yield return new WaitForSeconds(0.05f);
+                yield return new WaitForSeconds(0.005f);
 
             nowTime = DateTime.Now;
             diff = nowTime - initialTime;
@@ -84,7 +88,8 @@ public class AnimalLoop : MonoBehaviour
     }
     public void InputHandler(string data)
     {
-        //Debug.Log(data);
+        Debug.Log("yo");
+        Debug.Log(data);
         switch (data)
         {
             case "button1press":

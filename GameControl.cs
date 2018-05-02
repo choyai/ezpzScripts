@@ -7,7 +7,7 @@ using System;
 
 public class GameControl : MonoBehaviour
 {
-    public static SerialPort stream = new SerialPort("COM6", 9600);
+    public static SerialPort stream = new SerialPort("COM6", 57600);
     public static int SceneCount = 0;
     public static string CurrentAnimal = "";
     public static bool Button1 = false, Button2 = false, Button3 = false, Button4 = false, Button5 = false;
@@ -44,7 +44,7 @@ public class GameControl : MonoBehaviour
                 AsynchronousReadFromArduino
                         ((s) => InputHandler(s), // Callback
                         () => Debug.LogError("Error!"), // Error callback
-                        10000f                      // Timeout (milliseconds)
+                        50f                      // Timeout (milliseconds)
                         )
         );
     }
