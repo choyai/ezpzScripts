@@ -7,18 +7,18 @@ using UnityEngine.SceneManagement;
 
 public class AnimalLoop : MonoBehaviour
 {
-    // Use this for initialization
-    void Start()
-    {
+// Use this for initialization
+void Start()
+{
 
-    }
+}
 
-    // Update is called once per frame
-    void Update()
-    {
+// Update is called once per frame
+void Update()
+{
         StartCoroutine
         (
-                AsynchronousReadFromArduino
+                CoReadFromArduino
                         ((s) => InputHandler(s), // Callback
                         () => Debug.LogError("Error!"), // Error callback
                         10000f                      // Timeout (milliseconds)
@@ -27,27 +27,27 @@ public class AnimalLoop : MonoBehaviour
         //Debug.Log(message: GameControl.Button1Count);
         if (GameControl.Button1Count > 0 && GameControl.Button2Count > 0 && GameControl.Button3Count > 0 && GameControl.Button4Count > 0 && GameControl.Button5Count > 0)
         {
-            SceneManager.LoadScene("Randomizer");
+                SceneManager.LoadScene("Randomizer");
         }
-    }
-    private void OnGUI()
-    {
+}
+private void OnGUI()
+{
         if (Event.current.Equals(Event.KeyboardEvent("return")))
         {
-            Debug.Log("please");
-            //WriteToArduino("button1press");
-            //WriteToArduino("button2press");
-            //WriteToArduino("button3press");
-            //WriteToArduino("button4press");
-            //WriteToArduino("button5press");
-            if (GameControl.Button1Count > 0) /*&& GameControl.Button2Count > 0 && GameControl.Button3Count > 0 && GameControl.Button4Count > 0 && GameControl.Button5Count > 0)*/
-            {
+                // Debug.Log("please");
+                //WriteToArduino("button1press");
+                //WriteToArduino("button2press");
+                //WriteToArduino("button3press");
+                //WriteToArduino("button4press");
+                //WriteToArduino("button5press");
+                // if (GameControl.Button1Count > 0) /*&& GameControl.Button2Count > 0 && GameControl.Button3Count > 0 && GameControl.Button4Count > 0 && GameControl.Button5Count > 0)*/
+                // {
                 SceneManager.LoadScene("Randomizer");
-            }
+                // }
         }
-    }
-    public IEnumerator AsynchronousReadFromArduino(Action<string> callback, Action fail = null, float timeout = float.PositiveInfinity)
-    {
+}
+public IEnumerator CoReadFromArduino(Action<string> callback, Action fail = null, float timeout = float.PositiveInfinity)
+{
         DateTime initialTime = DateTime.Now;
         DateTime nowTime;
         TimeSpan diff = default(TimeSpan);
@@ -56,40 +56,40 @@ public class AnimalLoop : MonoBehaviour
 
         do
         {
-            try
-            {
-                dataString = GameControl.stream.ReadLine();
-                Debug.Log(dataString);
-            }
-            catch (TimeoutException)
-            {
-                dataString = null;
-            }
+                try
+                {
+                        dataString = GameControl.stream.ReadLine();
+                        Debug.Log(dataString);
+                }
+                catch (TimeoutException)
+                {
+                        dataString = null;
+                }
 
-            if (dataString != null)
-            {
-                callback(dataString);
-                yield return null;
-            }
-            else
-                yield return new WaitForSeconds(0.1f);
+                if (dataString != null)
+                {
+                        callback(dataString);
+                        yield return null;
+                }
+                else
+                        yield return new WaitForSeconds(0.1f);
 
-            nowTime = DateTime.Now;
-            diff = nowTime - initialTime;
+                nowTime = DateTime.Now;
+                diff = nowTime - initialTime;
 
         } while (diff.Milliseconds < timeout);
 
         if (fail != null)
-            fail();
+                fail();
         yield return null;
-    }
-    public void WriteToArduino(string message)
-    {
+}
+public void WriteToArduino(string message)
+{
         GameControl.stream.WriteLine(message);
         GameControl.stream.BaseStream.Flush();
-    }
-    public void InputHandler(string data)
-    {
+}
+public void InputHandler(string data)
+{
         Debug.Log("yo");
         Debug.Log(data);
         //GameControl.Button1Count = data[0];
@@ -99,26 +99,26 @@ public class AnimalLoop : MonoBehaviour
         //GameControl.Button5Count = data[4];
         switch (data[0])
         {
-            case 'b':
+        case 'b':
                 switch (data[1])
                 {
-                    case '1':
+                case '1':
                         GameControl.Button1Count += 1;
                         break;
-                    case '2':
+                case '2':
                         GameControl.Button2Count += 1;
                         break;
-                    case '3':
+                case '3':
                         GameControl.Button3Count += 1;
                         break;
-                    case '4':
+                case '4':
                         GameControl.Button4Count += 1;
                         break;
-                    case '5':
+                case '5':
                         GameControl.Button5Count += 1;
                         break;
                 }
                 break;
         }
-    }
+}
 }
