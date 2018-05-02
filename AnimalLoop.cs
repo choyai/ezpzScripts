@@ -16,14 +16,14 @@ public class AnimalLoop : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        StartCoroutine
-        (
-                AsynchronousReadFromArduino
-                        ((s) => InputHandler(s), // Callback
-                        () => Debug.LogError("Error!"), // Error callback
-                        10000f                      // Timeout (milliseconds)
-                        )
-        );
+        //StartCoroutine
+        //(
+        //        AsynchronousReadFromArduino
+        //                ((s) => InputHandler(s), // Callback
+        //                () => Debug.LogError("Error!"), // Error callback
+        //                10000f                      // Timeout (milliseconds)
+        //                )
+        //);
         Debug.Log(GameControl.Button1Count);
     }
     private void OnGUI()
@@ -37,6 +37,7 @@ public class AnimalLoop : MonoBehaviour
             WriteToArduino("button5press");
             if (GameControl.Button1Count > 0 && GameControl.Button2Count > 0 && GameControl.Button3Count > 0 && GameControl.Button4Count > 0 && GameControl.Button5Count > 0)
             {
+                GameControl.SceneCount++;
                 SceneManager.LoadScene("Randomizer");
             }
         }

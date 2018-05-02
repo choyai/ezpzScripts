@@ -25,7 +25,14 @@ public class GameControl : MonoBehaviour
         //"Lion",
         //"Elephant"
     };
-
+    public static bool[] buttons = new bool[]
+    {
+        false,
+        false,
+        false,
+        false,
+        false
+    };
     public static List<string> Animals = new List<string>(animals);
 
     // Use this for initialization
@@ -33,22 +40,32 @@ public class GameControl : MonoBehaviour
     {
         stream.ReadTimeout = 50;
         stream.Open();
-        //DontDestroyOnLoad(this.gameObject);
+        DontDestroyOnLoad(this.gameObject);
+        stream.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
     }
 
     // Update is called once per frame
     void Update()
     {
-        StartCoroutine
-        (
-                AsynchronousReadFromArduino
-                        ((s) => InputHandler(s), // Callback
-                        () => Debug.LogError("Error!"), // Error callback
-                        10000f                      // Timeout (milliseconds)
-                        )
-        );
+        //StartCoroutine
+        //(
+        //        AsynchronousReadFromArduino
+        //                ((s) => InputHandler(s), // Callback
+        //                () => Debug.LogError("Error!"), // Error callback
+        //                10000f                      // Timeout (milliseconds)
+        //                )
+        //);
+        //StartCoroutine(PrintEach(buttons));
     }
-
+    public IEnumerator PrintEach(bool[] a)
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            string ai = a[i].ToString();
+            Debug.Log(ai);
+            yield return null;
+        }
+    }
     private void OnGUI()
     {
         GUILayout.Label("Press Enter To Advance");
@@ -122,5 +139,25 @@ public class GameControl : MonoBehaviour
                 break;
         }
 
+    }
+    public static void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
+    {
+        Debug.Log("Woot");
+        SerialPort sp = (SerialPort)sender;
+        string indata = sp.ReadExisting();
+        switch (indata.Split()[0])
+        {
+            case "b":
+                int i = int.Parse(indata.Split()[1]);
+                if (indata.Split()[2] == "p")
+                {
+                    buttons[i] = true;
+                }
+                else
+                {
+                    buttons[i] = false;
+                }
+                break;
+        }
     }
 }

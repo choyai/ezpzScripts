@@ -16,14 +16,14 @@ public class Randomizer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        StartCoroutine
-       (
-               AsynchronousReadFromArduino
-                       ((s) => InputHandler(s), // Callback
-                       () => Debug.LogError("Error!"), // Error callback
-                       10000f                      // Timeout (milliseconds)
-                       )
-       );
+        // StartCoroutine
+        //(
+        //        AsynchronousReadFromArduino
+        //                ((s) => InputHandler(s), // Callback
+        //                () => Debug.LogError("Error!"), // Error callback
+        //                10000f                      // Timeout (milliseconds)
+        //                )
+        //);
         StartCoroutine(LoadNextScene(GameControl.CurrentAnimal + "Intro"));
 
     }
