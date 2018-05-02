@@ -23,8 +23,16 @@ public class AnimalLoop : MonoBehaviour
     {
         if (Event.current.Equals(Event.KeyboardEvent("return")))
         {
-
-            SceneManager.LoadScene("Randomizer");
+            WriteToArduino("button1press");
+            if (GameControl.Button1Count > 0 && GameControl.Button2Count > 0 && GameControl.Button3Count > 0 && GameControl.Button4Count > 0 && GameControl.Button5Count > 0)
+            {
+                SceneManager.LoadScene("Randomizer");
+            }
         }
+    }
+    public void WriteToArduino(string message)
+    {
+        GameControl.stream.WriteLine(message);
+        GameControl.stream.BaseStream.Flush();
     }
 }

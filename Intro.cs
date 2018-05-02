@@ -15,14 +15,15 @@ public class Intro : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        WriteToArduino("button1press");
-        if (GameControl.Button1count > 0 && GameControl.Button2count > 0 && GameControl.Button3count > 0 && GameControl.Button4count > 0 && GameControl.Button5count > 0)
+        if (GameControl.Button1Count > 0 && GameControl.Button2Count > 0 && GameControl.Button3Count > 0 && GameControl.Button4Count > 0 && GameControl.Button5Count > 0)
         {
-            GameControl.Button1count = 0;
-            GameControl.Button2count = 0;
-            GameControl.Button3count = 0;
-            GameControl.Button4count = 0;
-            GameControl.Button5count = 0;
+            SceneManager.LoadScene("Randomizer");
+        }
+    }
+    private void OnGUI()
+    {
+        if (Event.current.Equals(Event.KeyboardEvent("return")))
+        {
             SceneManager.LoadScene("Randomizer");
         }
     }

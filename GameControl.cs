@@ -7,11 +7,11 @@ using System;
 
 public class GameControl : MonoBehaviour
 {
-    public static SerialPort stream = new SerialPort("COM7", 9600);
+    public static SerialPort stream = new SerialPort("COM6", 9600);
     public static int SceneCount = 0;
     public static string CurrentAnimal = "";
     public static bool Button1 = false, Button2 = false, Button3 = false, Button4 = false, Button5 = false;
-    public static int Button1count = 0, Button2count = 0, Button3count = 0, Button4count = 0, Button5count = 0;
+    public static int Button1Count = 0, Button2Count = 0, Button3Count = 0, Button4Count = 0, Button5Count = 0;
     public static string[] animals = new string[]
     {
         "Bear",
@@ -33,7 +33,7 @@ public class GameControl : MonoBehaviour
     {
         stream.ReadTimeout = 50;
         stream.Open();
-        //DontDestroyOnLoad(this.gameObject);
+        DontDestroyOnLoad(this.gameObject);
     }
 
     // Update is called once per frame
@@ -42,7 +42,7 @@ public class GameControl : MonoBehaviour
         StartCoroutine
         (
                 AsynchronousReadFromArduino
-                        ((string s) => InputHandler(s), // Callback
+                        ((s) => InputHandler(s), // Callback
                         () => Debug.LogError("Error!"), // Error callback
                         10000f                      // Timeout (milliseconds)
                         )
@@ -97,26 +97,29 @@ public class GameControl : MonoBehaviour
     }
     public void InputHandler(string data)
     {
-        Debug.Log(data);
-        if (data == "button1press")
+        //Debug.Log(data);
+        switch (data)
         {
-            Button1count += 1;
-        }
-        else if (data == "button2press")
-        {
-            Button2count += 1;
-        }
-        else if (data == "button3press")
-        {
-            Button3count += 1;
-        }
-        else if (data == "button4press")
-        {
-            Button4count += 1;
-        }
-        else if (data == "button5press")
-        {
-            Button5count += 1;
+            case "button1press":
+                Button1Count += 1;
+                Button1 = true;
+                break;
+            case "button2press":
+                Button2Count += 1;
+                Button2 = true;
+                break;
+            case "button3press":
+                Button3Count += 1;
+                Button3 = true;
+                break;
+            case "button4press":
+                Button4Count += 1;
+                Button4 = true;
+                break;
+            case "button5press":
+                Button5Count += 1;
+                Button5 = true;
+                break;
         }
 
     }

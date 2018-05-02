@@ -16,7 +16,22 @@ public class Randomizer : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        SceneManager.LoadScene(GameControl.CurrentAnimal + "Intro");
+        StartCoroutine(LoadNextScene(GameControl.CurrentAnimal + "Intro"));
+    }
+
+    public IEnumerator LoadNextScene(string sceneName)
+    {
+        yield return null;
+        AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName);
+        asyncOperation.allowSceneActivation = false;
+        while (!asyncOperation.isDone)
+        {
+            if (asyncOperation.progress >= 0.99f)
+            {
+                asyncOperation.allowSceneActivation = true;
+            }
+        }
+        yield return null;
     }
 
     public string RandomScene()
@@ -26,7 +41,7 @@ public class Randomizer : MonoBehaviour
         string Animal = GameControl.Animals[index];
         GameControl.Animals.RemoveAt(index);
         GameControl.CurrentAnimal = Animal;
-        Debug.Log(Animal + " " + GameControl.Animals.Count);
+        Debug.Log(GameControl.Animals.Count);
         return Animal;
     }
 }
