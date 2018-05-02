@@ -33,7 +33,7 @@ public class GameControl : MonoBehaviour
     {
         stream.ReadTimeout = 50;
         stream.Open();
-        DontDestroyOnLoad(this.gameObject);
+        //DontDestroyOnLoad(this.gameObject);
     }
 
     // Update is called once per frame
@@ -97,27 +97,27 @@ public class GameControl : MonoBehaviour
     }
     public void InputHandler(string data)
     {
-        //Debug.Log(data);
+        Debug.Log(data);
         switch (data)
         {
             case "button1press":
-                Button1Count += 1;
+                //Button1Count += 1;
                 Button1 = true;
                 break;
             case "button2press":
-                Button2Count += 1;
+                //Button2Count += 1;
                 Button2 = true;
                 break;
             case "button3press":
-                Button3Count += 1;
+                //Button3Count += 1;
                 Button3 = true;
                 break;
             case "button4press":
-                Button4Count += 1;
+                //Button4Count += 1;
                 Button4 = true;
                 break;
             case "button5press":
-                Button5Count += 1;
+                //Button5Count += 1;
                 Button5 = true;
                 break;
         }

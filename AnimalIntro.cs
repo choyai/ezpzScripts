@@ -5,10 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class AnimalIntro : MonoBehaviour
 {
-    public bool loopReached;
     private void Awake()
     {
-        loopReached = false;
         GameControl.Button1Count = 0;
         GameControl.Button2Count = 0;
         GameControl.Button3Count = 0;
@@ -58,22 +56,10 @@ public class AnimalIntro : MonoBehaviour
 
     }
 
-    public IEnumerator LoadNextScene(string sceneName)
-    {
-        yield return null;
-        AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName);
-        asyncOperation.allowSceneActivation = false;
-        while (!asyncOperation.isDone)
-        {
-            if (asyncOperation.progress >= 0.99f || loopReached)
-            {
-                asyncOperation.allowSceneActivation = true;
-            }
-        }
-    }
+
 
     void EndReached(UnityEngine.Video.VideoPlayer vp)
     {
-        loopReached = true;
+        SceneManager.LoadScene(GameControl.CurrentAnimal + "Loop");
     }
 }
