@@ -25,7 +25,7 @@ public class Intro : MonoBehaviour
         if (Event.current.Equals(Event.KeyboardEvent("return")))
         {
             Debug.Log("WHY");
-            //SceneManager.LoadScene("Randomizer");
+            SceneManager.LoadScene("Randomizer");
             WriteToArduino("b1p");
             WriteToArduino("b2p");
             WriteToArduino("b3p");

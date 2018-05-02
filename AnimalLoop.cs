@@ -10,7 +10,7 @@ public class AnimalLoop : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
+        GameControl.stream.DataReceived += new SerialDataReceivedEventHandler(DataReceivedHandler);
     }
 
     // Update is called once per frame
@@ -24,7 +24,7 @@ public class AnimalLoop : MonoBehaviour
         //                10000f                      // Timeout (milliseconds)
         //                )
         //);
-        Debug.Log(GameControl.Button1Count);
+        //Debug.Log(GameControl.Button1Count);
     }
     private void OnGUI()
     {
@@ -35,7 +35,18 @@ public class AnimalLoop : MonoBehaviour
             WriteToArduino("button3press");
             WriteToArduino("button4press");
             WriteToArduino("button5press");
+            WriteToArduino("b1p");
+            WriteToArduino("b2p");
+            WriteToArduino("b3p");
+            WriteToArduino("b4p");
+            WriteToArduino("b5p");
+            Debug.Log("how");
             if (GameControl.Button1Count > 0 && GameControl.Button2Count > 0 && GameControl.Button3Count > 0 && GameControl.Button4Count > 0 && GameControl.Button5Count > 0)
+            {
+                GameControl.SceneCount++;
+                SceneManager.LoadScene("Randomizer");
+            }
+            if (GameControl.buttons[0] == GameControl.buttons[1] == GameControl.buttons[2] == GameControl.buttons[3] == GameControl.buttons[4] == true)
             {
                 GameControl.SceneCount++;
                 SceneManager.LoadScene("Randomizer");
@@ -110,5 +121,25 @@ public class AnimalLoop : MonoBehaviour
                 break;
         }
 
+    }
+    public static void DataReceivedHandler(object sender, SerialDataReceivedEventArgs e)
+    {
+        Debug.Log("Woot");
+        SerialPort sp = (SerialPort)sender;
+        string indata = sp.ReadExisting();
+        switch (indata.Split()[0])
+        {
+            case "b":
+                int i = int.Parse(indata.Split()[1]);
+                if (indata.Split()[2] == "p")
+                {
+                    GameControl.buttons[i] = true;
+                }
+                else
+                {
+                    GameControl.buttons[i] = false;
+                }
+                break;
+        }
     }
 }
