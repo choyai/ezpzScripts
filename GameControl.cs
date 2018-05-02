@@ -7,7 +7,7 @@ using System;
 
 public class GameControl : MonoBehaviour
 {
-    public static SerialPort stream = new SerialPort("COM6", 57600);
+    public static SerialPort stream = new SerialPort("COM7", 57600);
     public static int SceneCount = 0;
     public static string CurrentAnimal = "";
     public static bool Button1 = false, Button2 = false, Button3 = false, Button4 = false, Button5 = false;
@@ -97,30 +97,35 @@ public class GameControl : MonoBehaviour
     }
     public void InputHandler(string data)
     {
+        Debug.Log("yo");
         Debug.Log(data);
-        switch (data)
+        //GameControl.Button1Count = data[0];
+        //GameControl.Button2Count = data[1];
+        //GameControl.Button3Count = data[2];
+        //GameControl.Button4Count = data[3];
+        //GameControl.Button5Count = data[4];
+        switch (data[0])
         {
-            case "button1press":
-                //Button1Count += 1;
-                Button1 = true;
-                break;
-            case "button2press":
-                //Button2Count += 1;
-                Button2 = true;
-                break;
-            case "button3press":
-                //Button3Count += 1;
-                Button3 = true;
-                break;
-            case "button4press":
-                //Button4Count += 1;
-                Button4 = true;
-                break;
-            case "button5press":
-                //Button5Count += 1;
-                Button5 = true;
+            case 'b':
+                switch (data[1])
+                {
+                    case '1':
+                        GameControl.Button1Count += 1;
+                        break;
+                    case '2':
+                        GameControl.Button2Count += 1;
+                        break;
+                    case '3':
+                        GameControl.Button3Count += 1;
+                        break;
+                    case '4':
+                        GameControl.Button4Count += 1;
+                        break;
+                    case '5':
+                        GameControl.Button5Count += 1;
+                        break;
+                }
                 break;
         }
-
     }
 }

@@ -24,19 +24,23 @@ public class AnimalLoop : MonoBehaviour
                         10000f                      // Timeout (milliseconds)
                         )
         );
-        Debug.Log(message: GameControl.Button1Count);
+        //Debug.Log(message: GameControl.Button1Count);
+        if (GameControl.Button1Count > 0 && GameControl.Button2Count > 0 && GameControl.Button3Count > 0 && GameControl.Button4Count > 0 && GameControl.Button5Count > 0)
+        {
+            SceneManager.LoadScene("Randomizer");
+        }
     }
     private void OnGUI()
     {
         if (Event.current.Equals(Event.KeyboardEvent("return")))
         {
             Debug.Log("please");
-            WriteToArduino("button1press");
-            WriteToArduino("button2press");
-            WriteToArduino("button3press");
-            WriteToArduino("button4press");
-            WriteToArduino("button5press");
-            if (GameControl.Button1Count > 0 && GameControl.Button2Count > 0 && GameControl.Button3Count > 0 && GameControl.Button4Count > 0 && GameControl.Button5Count > 0)
+            //WriteToArduino("button1press");
+            //WriteToArduino("button2press");
+            //WriteToArduino("button3press");
+            //WriteToArduino("button4press");
+            //WriteToArduino("button5press");
+            if (GameControl.Button1Count > 0) /*&& GameControl.Button2Count > 0 && GameControl.Button3Count > 0 && GameControl.Button4Count > 0 && GameControl.Button5Count > 0)*/
             {
                 SceneManager.LoadScene("Randomizer");
             }
@@ -88,29 +92,33 @@ public class AnimalLoop : MonoBehaviour
     {
         Debug.Log("yo");
         Debug.Log(data);
-        switch (data)
+        //GameControl.Button1Count = data[0];
+        //GameControl.Button2Count = data[1];
+        //GameControl.Button3Count = data[2];
+        //GameControl.Button4Count = data[3];
+        //GameControl.Button5Count = data[4];
+        switch (data[0])
         {
-            case "button1press":
-                GameControl.Button1Count += 1;
-                GameControl.Button1 = true;
-                break;
-            case "button2press":
-                GameControl.Button2Count += 1;
-                GameControl.Button2 = true;
-                break;
-            case "button3press":
-                GameControl.Button3Count += 1;
-                GameControl.Button3 = true;
-                break;
-            case "button4press":
-                GameControl.Button4Count += 1;
-                GameControl.Button4 = true;
-                break;
-            case "button5press":
-                GameControl.Button5Count += 1;
-                GameControl.Button5 = true;
+            case 'b':
+                switch (data[1])
+                {
+                    case '1':
+                        GameControl.Button1Count += 1;
+                        break;
+                    case '2':
+                        GameControl.Button2Count += 1;
+                        break;
+                    case '3':
+                        GameControl.Button3Count += 1;
+                        break;
+                    case '4':
+                        GameControl.Button4Count += 1;
+                        break;
+                    case '5':
+                        GameControl.Button5Count += 1;
+                        break;
+                }
                 break;
         }
-
     }
 }
