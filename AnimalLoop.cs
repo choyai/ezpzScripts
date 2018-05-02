@@ -66,7 +66,7 @@ public class AnimalLoop : MonoBehaviour
                 yield return null;
             }
             else
-                yield return new WaitForSeconds(0.05f);
+                yield return new WaitForSeconds(0.02f);
 
             nowTime = DateTime.Now;
             diff = nowTime - initialTime;

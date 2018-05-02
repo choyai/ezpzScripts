@@ -7,7 +7,7 @@ using System;
 
 public class GameControl : MonoBehaviour
 {
-    public static SerialPort stream = new SerialPort("COM6", 9600);
+    public static SerialPort stream = new SerialPort("COM6", 57600);
     public static int SceneCount = 0;
     public static string CurrentAnimal = "";
     public static bool Button1 = false, Button2 = false, Button3 = false, Button4 = false, Button5 = false;
@@ -79,7 +79,7 @@ public class GameControl : MonoBehaviour
                 yield return null;
             }
             else
-                yield return new WaitForSeconds(0.05f);
+                yield return new WaitForSeconds(0.02f);
 
             nowTime = DateTime.Now;
             diff = nowTime - initialTime;
