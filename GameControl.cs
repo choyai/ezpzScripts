@@ -44,7 +44,7 @@ public class GameControl : MonoBehaviour
                 AsynchronousReadFromArduino
                         ((s) => InputHandler(s), // Callback
                         () => Debug.LogError("Error!"), // Error callback
-                        50f                      // Timeout (milliseconds)
+                        10000f                      // Timeout (milliseconds)
                         )
         );
     }
