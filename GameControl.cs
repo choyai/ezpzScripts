@@ -28,11 +28,12 @@ public static string[] animals = new string[]
 public static List<string> Animals = new List<string>(animals);
 public SerialController serialController;
 // Use this for initialization
-void Start()
+void OnEnable()
 {
         serialController = GameObject.Find("SerialController").GetComponent<SerialController>();
         //DontDestroyOnLoad(this.gameObject);
 }
+
 
 // Update is called once per frame
 void Update()
