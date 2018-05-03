@@ -10,15 +10,18 @@ public class AnimalLoop : MonoBehaviour
 {
 public SerialController serialController;
 // Use this for initialization
-void Start()
+void OnEnable()
 {
+        GameControl.Button1Count = 0;
+        GameControl.Button2Count = 0;
+        GameControl.Button3Count = 0;
+        GameControl.Button4Count = 0;
+        GameControl.Button5Count = 0;
         serialController = GameObject.Find("SerialController").GetComponent<SerialController>();
-
-        Debug.Log("Press A or Z to execute some actions");
 }
 
 // Update is called once per frame
-async void Update()
+void Update()
 {
         if (GameControl.Button1Count > 0)  //&& GameControl.Button2Count > 0 && GameControl.Button3Count > 0 && GameControl.Button4Count > 0 && GameControl.Button5Count > 0)
         {
@@ -43,7 +46,7 @@ private void OnGUI()
         if (Event.current.Equals(Event.KeyboardEvent("return")))
         {
                 Debug.Log("please");
-                WriteToArduino("b1");
+                serialController.SendSerialMessage("b1");
                 //WriteToArduino("button2press");
                 //WriteToArduino("button3press");
                 //WriteToArduino("button4press");
@@ -57,78 +60,78 @@ private void OnGUI()
 
 
 
-public async Task AsyncReadFromArduino(Action<string> callback){
-        DateTime initialTime = DateTime.Now;
-        DateTime nowTime;
-        TimeSpan diff = default(TimeSpan);
-
-        string dataString = null;
-
-        do
-        {
-                try
-                {
-                        dataString = GameControl.stream.ReadLine();
-                }
-                catch (Exception ex)
-                {
-                        throw ex;
-                }
-
-                if (dataString != null)
-                {
-                        callback(dataString);
-                }
-                else
-                        await Task.Delay(TimeSpan.FromSeconds(0.05f));
-
-                nowTime = DateTime.Now;
-                diff = nowTime - initialTime;
-
-        } while (diff.Milliseconds < GameControl.stream.ReadTimeout);
-}
-public IEnumerator CoReadFromArduino(Action<string> callback, Action fail = null, float timeout = float.PositiveInfinity)
-{
-        DateTime initialTime = DateTime.Now;
-        DateTime nowTime;
-        TimeSpan diff = default(TimeSpan);
-
-        string dataString = null;
-
-        do
-        {
-                try
-                {
-                        dataString = GameControl.stream.ReadLine();
-                        Debug.Log(dataString);
-                }
-                catch (TimeoutException)
-                {
-                        dataString = null;
-                }
-
-                if (dataString != null)
-                {
-                        callback(dataString);
-                        yield return null;
-                }
-                else
-                        yield return new WaitForSeconds(0.1f);
-
-                nowTime = DateTime.Now;
-                diff = nowTime - initialTime;
-
-        } while (diff.Milliseconds < timeout);
-
-        if (fail != null)
-                fail();
-        yield return null;
-}
-public void WriteToArduino(string message)
-{
-        GameControl.stream.WriteLine(message);
-        GameControl.stream.BaseStream.Flush();
-}
+// public async Task AsyncReadFromArduino(Action<string> callback){
+//         DateTime initialTime = DateTime.Now;
+//         DateTime nowTime;
+//         TimeSpan diff = default(TimeSpan);
+//
+//         string dataString = null;
+//
+//         do
+//         {
+//                 try
+//                 {
+//                         dataString = GameControl.stream.ReadLine();
+//                 }
+//                 catch (Exception ex)
+//                 {
+//                         throw ex;
+//                 }
+//
+//                 if (dataString != null)
+//                 {
+//                         callback(dataString);
+//                 }
+//                 else
+//                         await Task.Delay(TimeSpan.FromSeconds(0.05f));
+//
+//                 nowTime = DateTime.Now;
+//                 diff = nowTime - initialTime;
+//
+//         } while (diff.Milliseconds < GameControl.stream.ReadTimeout);
+// }
+// public IEnumerator CoReadFromArduino(Action<string> callback, Action fail = null, float timeout = float.PositiveInfinity)
+// {
+//         DateTime initialTime = DateTime.Now;
+//         DateTime nowTime;
+//         TimeSpan diff = default(TimeSpan);
+//
+//         string dataString = null;
+//
+//         do
+//         {
+//                 try
+//                 {
+//                         dataString = GameControl.stream.ReadLine();
+//                         Debug.Log(dataString);
+//                 }
+//                 catch (TimeoutException)
+//                 {
+//                         dataString = null;
+//                 }
+//
+//                 if (dataString != null)
+//                 {
+//                         callback(dataString);
+//                         yield return null;
+//                 }
+//                 else
+//                         yield return new WaitForSeconds(0.1f);
+//
+//                 nowTime = DateTime.Now;
+//                 diff = nowTime - initialTime;
+//
+//         } while (diff.Milliseconds < timeout);
+//
+//         if (fail != null)
+//                 fail();
+//         yield return null;
+// }
+// public void WriteToArduino(string message)
+// {
+//         GameControl.stream.WriteLine(message);
+//         GameControl.stream.BaseStream.Flush();
+// }
 public void InputHandler(string data)
 {
         Debug.Log("yo");

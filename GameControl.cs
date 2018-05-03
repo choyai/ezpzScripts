@@ -35,7 +35,7 @@ void Start()
 }
 
 // Update is called once per frame
-async void Update()
+void Update()
 {
         if (Input.GetKeyDown(KeyCode.A))
         {
@@ -62,79 +62,79 @@ private void OnGUI()
         GUILayout.Label("Press Enter To Advance");
 }
 
-public IEnumerator CoReadFromArduino(Action<string> callback, Action fail = null, float timeout = float.PositiveInfinity)
-{
-        DateTime initialTime = DateTime.Now;
-        DateTime nowTime;
-        TimeSpan diff = default(TimeSpan);
+// public IEnumerator CoReadFromArduino(Action<string> callback, Action fail = null, float timeout = float.PositiveInfinity)
+// {
+//         DateTime initialTime = DateTime.Now;
+//         DateTime nowTime;
+//         TimeSpan diff = default(TimeSpan);
+//
+//         string dataString = null;
+//
+//         do
+//         {
+//                 try
+//                 {
+//                         dataString = stream.ReadLine();
+//                 }
+//                 catch (TimeoutException)
+//                 {
+//                         dataString = null;
+//                 }
+//
+//                 if (dataString != null)
+//                 {
+//                         callback(dataString);
+//                         yield return null;
+//                 }
+//                 else
+//                         yield return new WaitForSeconds(0.05f);
+//
+//                 nowTime = DateTime.Now;
+//                 diff = nowTime - initialTime;
+//
+//         } while (diff.Milliseconds < timeout);
+//
+//         if (fail != null)
+//                 fail();
+//         yield return null;
+// }
 
-        string dataString = null;
+// public async void AsyncReadFromArduino(Action<string> callback){
+//         DateTime initialTime = DateTime.Now;
+//         DateTime nowTime;
+//         TimeSpan diff = default(TimeSpan);
+//
+//         string dataString = null;
+//
+//         do
+//         {
+//                 try
+//                 {
+//                         dataString = stream.ReadLine();
+//                 }
+//                 catch (TimeoutException)
+//                 {
+//                         dataString = null;
+//                 }
+//
+//                 if (dataString != null)
+//                 {
+//                         callback(dataString);
+//                 }
+//                 else
+//                         await new WaitForSeconds(0.05f);
+//
+//                 nowTime = DateTime.Now;
+//                 diff = nowTime - initialTime;
+//
+//         } while (diff.Milliseconds < stream.ReadTimeout);
+// }
 
-        do
-        {
-                try
-                {
-                        dataString = stream.ReadLine();
-                }
-                catch (TimeoutException)
-                {
-                        dataString = null;
-                }
-
-                if (dataString != null)
-                {
-                        callback(dataString);
-                        yield return null;
-                }
-                else
-                        yield return new WaitForSeconds(0.05f);
-
-                nowTime = DateTime.Now;
-                diff = nowTime - initialTime;
-
-        } while (diff.Milliseconds < timeout);
-
-        if (fail != null)
-                fail();
-        yield return null;
-}
-
-public async void AsyncReadFromArduino(Action<string> callback){
-        DateTime initialTime = DateTime.Now;
-        DateTime nowTime;
-        TimeSpan diff = default(TimeSpan);
-
-        string dataString = null;
-
-        do
-        {
-                try
-                {
-                        dataString = stream.ReadLine();
-                }
-                catch (TimeoutException)
-                {
-                        dataString = null;
-                }
-
-                if (dataString != null)
-                {
-                        callback(dataString);
-                }
-                else
-                        await new WaitForSeconds(0.05f);
-
-                nowTime = DateTime.Now;
-                diff = nowTime - initialTime;
-
-        } while (diff.Milliseconds < stream.ReadTimeout);
-}
-
-public void WriteToArduino(string message)
-{
-        stream.WriteLine(message);
-        stream.BaseStream.Flush();
-}
+// public void WriteToArduino(string message)
+// {
+//         stream.WriteLine(message);
+//         stream.BaseStream.Flush();
+// }
 public void InputHandler(string data)
 {
         Debug.Log("yo");
