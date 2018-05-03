@@ -47,11 +47,9 @@ async void Update()
         //                 10000f                      // Timeout (milliseconds)
         //                 )
         // );
-        AsyncReadFromArduino(
-                (s) => InputHandler(s), // Callback
-                () => Debug.LogError("Error!"), // Error
-                10000f
-                );
+        await new WaitForBackgroundThread();
+        AsyncReadFromArduino((s)=>InputHandler(s));
+        await new WaitForUpdate();
 }
 
 private void OnGUI()
@@ -96,7 +94,7 @@ public IEnumerator CoReadFromArduino(Action<string> callback, Action fail = null
         yield return null;
 }
 
-public async void AsyncReadFromArduino(Action<string> callback, Action fail = null, float timeout = float.PositiveInfinity){
+public async void AsyncReadFromArduino(Action<string> callback){
         DateTime initialTime = DateTime.Now;
         DateTime nowTime;
         TimeSpan diff = default(TimeSpan);
@@ -124,10 +122,7 @@ public async void AsyncReadFromArduino(Action<string> callback, Action fail = nu
                 nowTime = DateTime.Now;
                 diff = nowTime - initialTime;
 
-        } while (diff.Milliseconds < timeout);
-
-        if (fail != null)
-                fail();
+        } while (diff.Milliseconds < stream.ReadTimeout);
 }
 
 public void WriteToArduino(string message)

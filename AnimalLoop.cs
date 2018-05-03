@@ -4,6 +4,7 @@ using System.IO.Ports;
 using UnityEngine;
 using System;
 using UnityEngine.SceneManagement;
+using System.Threading.Tasks;
 
 public class AnimalLoop : MonoBehaviour
 {
@@ -14,37 +15,75 @@ void Start()
 }
 
 // Update is called once per frame
-void Update()
+async void Update()
 {
-        StartCoroutine
-        (
-                CoReadFromArduino
-                        ((s) => InputHandler(s), // Callback
-                        () => Debug.LogError("Error!"), // Error callback
-                        10000f                      // Timeout (milliseconds)
-                        )
-        );
+
+        // StartCoroutine
+        // (
+        //         CoReadFromArduino
+        //                 ((s) => InputHandler(s), // Callback
+        //                 () => Debug.LogError("Error!"), // Error callback
+        //                 10000f                      // Timeout (milliseconds)
+        //                 )
+        // );
         //Debug.Log(message: GameControl.Button1Count);
-        if (GameControl.Button1Count > 0 && GameControl.Button2Count > 0 && GameControl.Button3Count > 0 && GameControl.Button4Count > 0 && GameControl.Button5Count > 0)
+        if (GameControl.Button1Count > 0)  //&& GameControl.Button2Count > 0 && GameControl.Button3Count > 0 && GameControl.Button4Count > 0 && GameControl.Button5Count > 0)
         {
                 SceneManager.LoadScene("Randomizer");
         }
+        await new WaitForBackgroundThread();
+        await CoReadFromArduino((s) => InputHandler(s), // Callback
+                                () => Debug.LogError("Error!"), // Error callback
+                                10000f );
+        AsyncReadFromArduino((s)=>InputHandler(s));
+        await new WaitForUpdate();
 }
 private void OnGUI()
 {
         if (Event.current.Equals(Event.KeyboardEvent("return")))
         {
-                // Debug.Log("please");
-                //WriteToArduino("button1press");
+                Debug.Log("please");
+                WriteToArduino("b1");
                 //WriteToArduino("button2press");
                 //WriteToArduino("button3press");
                 //WriteToArduino("button4press");
                 //WriteToArduino("button5press");
                 // if (GameControl.Button1Count > 0) /*&& GameControl.Button2Count > 0 && GameControl.Button3Count > 0 && GameControl.Button4Count > 0 && GameControl.Button5Count > 0)*/
                 // {
-                SceneManager.LoadScene("Randomizer");
+                // SceneManager.LoadScene("Randomizer");
                 // }
         }
+}
+
+public async Task AsyncReadFromArduino(Action<string> callback){
+        DateTime initialTime = DateTime.Now;
+        DateTime nowTime;
+        TimeSpan diff = default(TimeSpan);
+
+        string dataString = null;
+
+        do
+        {
+                try
+                {
+                        dataString = GameControl.stream.ReadLine();
+                }
+                catch (Exception ex)
+                {
+                        throw ex;
+                }
+
+                if (dataString != null)
+                {
+                        callback(dataString);
+                }
+                else
+                        await Task.Delay(TimeSpan.FromSeconds(0.05f));
+
+                nowTime = DateTime.Now;
+                diff = nowTime - initialTime;
+
+        } while (diff.Milliseconds < GameControl.stream.ReadTimeout);
 }
 public IEnumerator CoReadFromArduino(Action<string> callback, Action fail = null, float timeout = float.PositiveInfinity)
 {
