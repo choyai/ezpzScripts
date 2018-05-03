@@ -8,35 +8,35 @@ using System.Threading.Tasks;
 
 public class AnimalLoop : MonoBehaviour
 {
+public SerialController serialController;
 // Use this for initialization
 void Start()
 {
+        serialController = GameObject.Find("SerialController").GetComponent<SerialController>();
 
+        Debug.Log("Press A or Z to execute some actions");
 }
 
 // Update is called once per frame
 async void Update()
 {
-
-        // StartCoroutine
-        // (
-        //         CoReadFromArduino
-        //                 ((s) => InputHandler(s), // Callback
-        //                 () => Debug.LogError("Error!"), // Error callback
-        //                 10000f                      // Timeout (milliseconds)
-        //                 )
-        // );
-        //Debug.Log(message: GameControl.Button1Count);
         if (GameControl.Button1Count > 0)  //&& GameControl.Button2Count > 0 && GameControl.Button3Count > 0 && GameControl.Button4Count > 0 && GameControl.Button5Count > 0)
         {
                 SceneManager.LoadScene("Randomizer");
         }
-        await new WaitForBackgroundThread();
-        await CoReadFromArduino((s) => InputHandler(s), // Callback
-                                () => Debug.LogError("Error!"), // Error callback
-                                10000f );
-        AsyncReadFromArduino((s)=>InputHandler(s));
-        await new WaitForUpdate();
+        string message = serialController.ReadSerialMessage();
+
+        if (message == null)
+                return;
+
+        // Check if the message is plain data or a connect/disconnect event.
+        if (ReferenceEquals(message, SerialController.SERIAL_DEVICE_CONNECTED))
+                Debug.Log("Connection established");
+        else if (ReferenceEquals(message, SerialController.SERIAL_DEVICE_DISCONNECTED))
+                Debug.Log("Connection attempt failed or disconnection detected");
+        else
+                Debug.Log("Message arrived: " + message);
+        InputHandler(message);
 }
 private void OnGUI()
 {
@@ -54,6 +54,8 @@ private void OnGUI()
                 // }
         }
 }
+
+
 
 public async Task AsyncReadFromArduino(Action<string> callback){
         DateTime initialTime = DateTime.Now;

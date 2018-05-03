@@ -7,7 +7,6 @@ using System;
 
 public class GameControl : MonoBehaviour
 {
-public static SerialPort stream = new SerialPort("COM7", 57600);
 public static int SceneCount = 0;
 public static string CurrentAnimal = "";
 public static bool Button1 = false, Button2 = false, Button3 = false, Button4 = false, Button5 = false;
@@ -27,29 +26,35 @@ public static string[] animals = new string[]
 };
 
 public static List<string> Animals = new List<string>(animals);
-
+public SerialController serialController;
 // Use this for initialization
 void Start()
 {
-        stream.ReadTimeout = 50;
-        stream.Open();
+        serialController = GameObject.Find("SerialController").GetComponent<SerialController>();
         //DontDestroyOnLoad(this.gameObject);
 }
 
 // Update is called once per frame
 async void Update()
 {
-        // StartCoroutine
-        // (
-        //         CoReadFromArduino
-        //                 ((s) => InputHandler(s), // Callback
-        //                 () => Debug.LogError("Error!"), // Error callback
-        //                 10000f                      // Timeout (milliseconds)
-        //                 )
-        // );
-        await new WaitForBackgroundThread();
-        AsyncReadFromArduino((s)=>InputHandler(s));
-        await new WaitForUpdate();
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+                Debug.Log("Sending A");
+                serialController.SendSerialMessage("A");
+        }
+        string message = serialController.ReadSerialMessage();
+
+        if (message == null)
+                return;
+
+        // Check if the message is plain data or a connect/disconnect event.
+        if (ReferenceEquals(message, SerialController.SERIAL_DEVICE_CONNECTED))
+                Debug.Log("Connection established");
+        else if (ReferenceEquals(message, SerialController.SERIAL_DEVICE_DISCONNECTED))
+                Debug.Log("Connection attempt failed or disconnection detected");
+        else
+                Debug.Log("Message arrived: " + message);
+        InputHandler(message);
 }
 
 private void OnGUI()
