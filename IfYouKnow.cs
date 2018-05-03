@@ -1,43 +1,33 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
-using System.IO.Ports;
 using UnityEngine;
-using System;
 using UnityEngine.SceneManagement;
-using System.Threading.Tasks;
 
-public class AnimalLoop : MonoBehaviour
+public class IfYouKnow : MonoBehaviour
 {
 public SerialController serialController;
-public static string[] loopscenes = new string[]
-{
-        "IfYouKnow",
-        "WhatIsIt"
-};
-public static List<string> LoopScenes = new List<string>(loopscenes);
-// Use this for initialization
 void OnEnable()
 {
-        GameControl.Button1Count = 0;
-        GameControl.Button2Count = 0;
-        GameControl.Button3Count = 0;
-        GameControl.Button4Count = 0;
-        GameControl.Button5Count = 0;
         serialController = GameObject.Find("SerialController").GetComponent<SerialController>();
 }
-//At start, start to load the next random lines of dialogue.
-void Start(){
-        //send message to start receiving data
-        serialController.SendSerialMessage("q");
-        System.Random rand = new System.Random();
-        int index = rand.Next(0, LoopScenes.Count);
-        StartCoroutine(LoadNextScene(GameControl.CurrentAnimal + LoopScenes[index]));
+private void Awake()
+{
+}
+void Start()
+{
+        // Will attach a VideoPlayer to the main camera.
+        GameObject camera = GameObject.Find("Main Camera");
+        var videoPlayer = camera.AddComponent<UnityEngine.Video.VideoPlayer>();
+        videoPlayer.playOnAwake = false;
+        videoPlayer.url = "Assets/Movies/" + GameControl.CurrentAnimal + "IfYouKnow.mp4";
+        videoPlayer.isLooping = false;
+        // Add handler for loopPointReached
+        videoPlayer.loopPointReached += EndReached;
+        videoPlayer.Play();
 }
 
-// Update is called once per frame
-void Update()
+private void Update()
 {
-
         if (GameControl.Button1Count > 0 && GameControl.Button2Count > 0 && GameControl.Button3Count > 0 && GameControl.Button4Count > 0 && GameControl.Button5Count > 0)
         {
                 //send stop message
@@ -59,27 +49,33 @@ void Update()
         InputHandler(message);
 }
 
-public IEnumerator LoadNextScene(string sceneName)
-{
-        yield return null;
-        AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(sceneName);
-        asyncOperation.allowSceneActivation = false;
-        while (!asyncOperation.isDone)
+void OnGUI(){
+        if(Event.current.Equals(Event.KeyboardEvent("return")))
         {
-                if (asyncOperation.progress >= 0.9f)
-                {
-                        System.Random r = new System.Random();
-                        int seconds = r.Next(3, 7);
-                        yield return new WaitForSeconds(seconds);
-                        asyncOperation.allowSceneActivation = true;
-                }
-                yield return null;
+                serialController.SendSerialMessage("b1");
         }
-
+        else if(Event.current.Equals(Event.KeyboardEvent("a")))
+        {
+                serialController.SendSerialMessage("b2");
+        }
+        else if(Event.current.Equals(Event.KeyboardEvent("s")))
+        {
+                serialController.SendSerialMessage("b3");
+        }
+        else if(Event.current.Equals(Event.KeyboardEvent("d")))
+        {
+                serialController.SendSerialMessage("b4");
+        }
+        else if(Event.current.Equals(Event.KeyboardEvent("f")))
+        {
+                serialController.SendSerialMessage("b5");
+        }
 }
 
-private void OnGUI()
+
+void EndReached(UnityEngine.Video.VideoPlayer vp)
 {
+        SceneManager.LoadScene(GameControl.CurrentAnimal + "Loop");
 }
 
 public void InputHandler(string data)

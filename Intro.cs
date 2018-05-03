@@ -16,6 +16,24 @@ void Start(){
         serialController.SendSerialMessage("q");
 }
 
+void OnGUI(){
+        if(Event.current.Equals(Event.KeyboardEvent("return"))) {
+                serialController.SendSerialMessage("b1");
+        }
+        else if(Event.current.Equals(Event.KeyboardEvent("a"))) {
+                serialController.SendSerialMessage("b2");
+        }
+        else if(Event.current.Equals(Event.KeyboardEvent("s"))) {
+                serialController.SendSerialMessage("b3");
+        }
+        else if(Event.current.Equals(Event.KeyboardEvent("d"))) {
+                serialController.SendSerialMessage("b4");
+        }
+        else if(Event.current.Equals(Event.KeyboardEvent("f"))) {
+                serialController.SendSerialMessage("b5");
+        }
+}
+
 // Update is called once per frame
 void Update()
 {
@@ -25,9 +43,4 @@ void Update()
                 SceneManager.LoadScene("Randomizer");
         }
 }
-// public void WriteToArduino(string message)
-// {
-//         GameControl.stream.WriteLine(message);
-//         GameControl.stream.BaseStream.Flush();
-// }
 }

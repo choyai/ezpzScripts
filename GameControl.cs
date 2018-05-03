@@ -38,11 +38,6 @@ void OnEnable()
 // Update is called once per frame
 void Update()
 {
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-                Debug.Log("Sending A");
-                serialController.SendSerialMessage("A");
-        }
         string message = serialController.ReadSerialMessage();
 
         if (message == null)
@@ -54,8 +49,8 @@ void Update()
         else if (ReferenceEquals(message, SerialController.SERIAL_DEVICE_DISCONNECTED))
                 Debug.Log("Connection attempt failed or disconnection detected");
         else
-                Debug.Log("Message arrived: " + message);
-        InputHandler(message);
+        {  Debug.Log("Message arrived: " + message);
+           InputHandler(message);}
 }
 
 private void OnGUI()
@@ -63,82 +58,8 @@ private void OnGUI()
         GUILayout.Label("Press Enter To Advance");
 }
 
-// public IEnumerator CoReadFromArduino(Action<string> callback, Action fail = null, float timeout = float.PositiveInfinity)
-// {
-//         DateTime initialTime = DateTime.Now;
-//         DateTime nowTime;
-//         TimeSpan diff = default(TimeSpan);
-//
-//         string dataString = null;
-//
-//         do
-//         {
-//                 try
-//                 {
-//                         dataString = stream.ReadLine();
-//                 }
-//                 catch (TimeoutException)
-//                 {
-//                         dataString = null;
-//                 }
-//
-//                 if (dataString != null)
-//                 {
-//                         callback(dataString);
-//                         yield return null;
-//                 }
-//                 else
-//                         yield return new WaitForSeconds(0.05f);
-//
-//                 nowTime = DateTime.Now;
-//                 diff = nowTime - initialTime;
-//
-//         } while (diff.Milliseconds < timeout);
-//
-//         if (fail != null)
-//                 fail();
-//         yield return null;
-// }
-
-// public async void AsyncReadFromArduino(Action<string> callback){
-//         DateTime initialTime = DateTime.Now;
-//         DateTime nowTime;
-//         TimeSpan diff = default(TimeSpan);
-//
-//         string dataString = null;
-//
-//         do
-//         {
-//                 try
-//                 {
-//                         dataString = stream.ReadLine();
-//                 }
-//                 catch (TimeoutException)
-//                 {
-//                         dataString = null;
-//                 }
-//
-//                 if (dataString != null)
-//                 {
-//                         callback(dataString);
-//                 }
-//                 else
-//                         await new WaitForSeconds(0.05f);
-//
-//                 nowTime = DateTime.Now;
-//                 diff = nowTime - initialTime;
-//
-//         } while (diff.Milliseconds < stream.ReadTimeout);
-// }
-
-// public void WriteToArduino(string message)
-// {
-//         stream.WriteLine(message);
-//         stream.BaseStream.Flush();
-// }
 public void InputHandler(string data)
 {
-        Debug.Log("yo");
         Debug.Log(data);
         //GameControl.Button1Count = data[0];
         //GameControl.Button2Count = data[1];
