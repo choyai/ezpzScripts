@@ -77,6 +77,9 @@ public IEnumerator LoadNextScene(string sceneName)
         }
 
 }
+public IEnumerator LoadShortClip(string vidName){
+        yield return null;
+}
 
 private void OnGUI()
 {

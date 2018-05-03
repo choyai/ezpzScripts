@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class WhatIsIt : MonoBehaviour
 {
 public SerialController serialController;
+public UnityEngine.Video.VideoPlayer videoPlayer;
 void OnEnable()
 {
 								serialController = GameObject.Find("SerialController").GetComponent<SerialController>();
@@ -15,15 +16,17 @@ private void Awake()
 }
 void Start()
 {
-								// Will attach a VideoPlayer to the main camera.
-								GameObject camera = GameObject.Find("Main Camera");
-								var videoPlayer = camera.AddComponent<UnityEngine.Video.VideoPlayer>();
-								videoPlayer.playOnAwake = false;
-								videoPlayer.url = "Assets/Movies/" + GameControl.CurrentAnimal + "WhatIsIt.mp4";
-								videoPlayer.isLooping = false;
-								// Add handler for loopPointReached
+								// // Will attach a VideoPlayer to the main camera.
+								// GameObject camera = GameObject.Find("Main Camera");
+								// var videoPlayer = camera.AddComponent<UnityEngine.Video.VideoPlayer>();
+								// videoPlayer.playOnAwake = false;
+								// videoPlayer.url = "Assets/Movies/" + GameControl.CurrentAnimal + "WhatIsIt.mp4";
+								// videoPlayer.isLooping = false;
+								// // Add handler for loopPointReached
+								// videoPlayer.Prepare();
+								// videoPlayer.Play();
+								videoPlayer = GameObject.Find(GameControl.CurrentAnimal + "WhatItIs").GetComponent<UnityEngine.Video.VideoPlayer>();
 								videoPlayer.loopPointReached += EndReached;
-								videoPlayer.Play();
 }
 
 private void Update()
