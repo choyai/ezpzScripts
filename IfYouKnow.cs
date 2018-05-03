@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class IfYouKnow : MonoBehaviour
 {
 public SerialController serialController;
+public GameObject cam;
 public UnityEngine.Video.VideoPlayer videoPlayer;
 void OnEnable()
 {
@@ -17,16 +18,17 @@ private void Awake()
 void Start()
 {
         // // Will attach a VideoPlayer to the main camera.
-        // GameObject camera = GameObject.Find("Main Camera");
-        // var videoPlayer = camera.AddComponent<UnityEngine.Video.VideoPlayer>();
+        cam = GameObject.Find("Main Camera");
+
         // videoPlayer.playOnAwake = false;
         // videoPlayer.url = "Assets/Movies/" + GameControl.CurrentAnimal + "IfYouKnow.mp4";
         // videoPlayer.isLooping = false;
         // // Add handler for loopPointReached
         // videoPlayer.Prepare();
         // videoPlayer.Play();
-        videoPlayer = GameObject.Find(GameControl.CurrentAnimal + "IfYouKnow").GetComponent<UnityEngine.Video.VideoPlayer>();
+        videoPlayer = GameObject.Find("Main Camera").GetComponent<UnityEngine.Video.VideoPlayer>();
         videoPlayer.loopPointReached += EndReached;
+        videoPlayer.Play();
 }
 
 private void Update()
@@ -78,12 +80,12 @@ void OnGUI(){
 
 void EndReached(UnityEngine.Video.VideoPlayer vp)
 {
+        Destroy(cam);
         SceneManager.LoadScene(GameControl.CurrentAnimal + "Loop");
 }
 
 public void InputHandler(string data)
 {
-        Debug.Log("yo");
         Debug.Log(data);
         //GameControl.Button1Count = data[0];
         //GameControl.Button2Count = data[1];

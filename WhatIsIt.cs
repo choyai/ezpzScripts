@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class WhatIsIt : MonoBehaviour
 {
 public SerialController serialController;
+public GameObject cam;
 public UnityEngine.Video.VideoPlayer videoPlayer;
 void OnEnable()
 {
@@ -17,16 +18,17 @@ private void Awake()
 void Start()
 {
 								// // Will attach a VideoPlayer to the main camera.
-								// GameObject camera = GameObject.Find("Main Camera");
-								// var videoPlayer = camera.AddComponent<UnityEngine.Video.VideoPlayer>();
+								cam = GameObject.Find("Main Camera");
+
 								// videoPlayer.playOnAwake = false;
 								// videoPlayer.url = "Assets/Movies/" + GameControl.CurrentAnimal + "WhatIsIt.mp4";
 								// videoPlayer.isLooping = false;
 								// // Add handler for loopPointReached
 								// videoPlayer.Prepare();
 								// videoPlayer.Play();
-								videoPlayer = GameObject.Find(GameControl.CurrentAnimal + "WhatItIs").GetComponent<UnityEngine.Video.VideoPlayer>();
+								videoPlayer = GameObject.Find("Main Camera").GetComponent<UnityEngine.Video.VideoPlayer>();
 								videoPlayer.loopPointReached += EndReached;
+								videoPlayer.Play();
 }
 
 private void Update()
@@ -53,31 +55,37 @@ private void Update()
 }
 
 void OnGUI(){
-								if(Event.current.Equals(Event.KeyboardEvent("return"))) {
+								if(Event.current.Equals(Event.KeyboardEvent("return")))
+								{
 																serialController.SendSerialMessage("b1");
 								}
-								else if(Event.current.Equals(Event.KeyboardEvent("a"))) {
+								else if(Event.current.Equals(Event.KeyboardEvent("a")))
+								{
 																serialController.SendSerialMessage("b2");
 								}
-								else if(Event.current.Equals(Event.KeyboardEvent("s"))) {
+								else if(Event.current.Equals(Event.KeyboardEvent("s")))
+								{
 																serialController.SendSerialMessage("b3");
 								}
-								else if(Event.current.Equals(Event.KeyboardEvent("d"))) {
+								else if(Event.current.Equals(Event.KeyboardEvent("d")))
+								{
 																serialController.SendSerialMessage("b4");
 								}
-								else if(Event.current.Equals(Event.KeyboardEvent("f"))) {
+								else if(Event.current.Equals(Event.KeyboardEvent("f")))
+								{
 																serialController.SendSerialMessage("b5");
 								}
 }
 
+
 void EndReached(UnityEngine.Video.VideoPlayer vp)
 {
+								Destroy(cam);
 								SceneManager.LoadScene(GameControl.CurrentAnimal + "Loop");
 }
 
 public void InputHandler(string data)
 {
-								Debug.Log("yo");
 								Debug.Log(data);
 								//GameControl.Button1Count = data[0];
 								//GameControl.Button2Count = data[1];

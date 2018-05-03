@@ -15,14 +15,14 @@ public static string[] animals = new string[]
 {
         "Bear",
         "Squirrel",
-        // "Sheep",
-        // "Monkey",
-        // "Rhino",
-        // "Giraffe",
-        // "Snake",
-        // "Deer",
-        // "Lion",
-        // "Elephant"
+        "Sheep",
+        "Monkey",
+        "Rhino",
+        "Giraffe",
+        "Snake",
+        "Deer",
+        "Lion",
+        "Elephant"
 };
 
 public static List<string> Animals = new List<string>(animals);

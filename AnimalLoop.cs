@@ -9,14 +9,17 @@ using System.Threading.Tasks;
 public class AnimalLoop : MonoBehaviour
 {
 public SerialController serialController;
+public AudioSource audioSource;
+public UnityEngine.Video.VideoPlayer videoPlayer;
 public static string[] loopscenes = new string[]
 {
         "IfYouKnow",
         "WhatIsIt"
 };
 public static List<string> LoopScenes = new List<string>(loopscenes);
+public int index;
 // Use this for initialization
-void OnEnable()
+void Awake()
 {
         GameControl.Button1Count = 0;
         GameControl.Button2Count = 0;
@@ -27,11 +30,25 @@ void OnEnable()
 }
 //At start, start to load the next random lines of dialogue.
 void Start(){
+        System.Random rand = new System.Random();
+
         //send message to start receiving data
         serialController.SendSerialMessage("q");
-        System.Random rand = new System.Random();
-        int index = rand.Next(0, LoopScenes.Count);
-        StartCoroutine(LoadNextScene(GameControl.CurrentAnimal + LoopScenes[index]));
+
+        // Will attach a VideoPlayer to the main camera.
+        GameObject camera = GameObject.Find("Main Camera");
+        var videoPlayer = camera.AddComponent<UnityEngine.Video.VideoPlayer>();
+        videoPlayer.playOnAwake = false;
+
+        index = rand.Next(0, LoopScenes.Count);
+        audioSource = GameObject.Find(GameControl.CurrentAnimal + LoopScenes[index] + "_1").GetComponent<AudioSource>();
+        videoPlayer.url = "Assets/Movies/" + GameControl.CurrentAnimal + LoopScenes[index] + ".mp4";
+        Debug.Log("Fetching" + LoopScenes[index]);
+        videoPlayer.isLooping = false;
+        // Add handler for loopPointReached
+        videoPlayer.loopPointReached += EndReached;
+        videoPlayer.prepareCompleted += Prepared;
+        videoPlayer.Prepare();
 }
 
 // Update is called once per frame
@@ -78,11 +95,39 @@ public IEnumerator LoadNextScene(string sceneName)
 
 }
 public IEnumerator LoadShortClip(string vidName){
+        // Will attach a VideoPlayer to the main camera.
+        GameObject camera = GameObject.Find("Main Camera");
+        var videoPlayer = camera.AddComponent<UnityEngine.Video.VideoPlayer>();
+        videoPlayer.playOnAwake = false;
+        videoPlayer.url = "Assets/Movies/" + GameControl.CurrentAnimal + "IfYouKnow.mp4";
+        videoPlayer.isLooping = false;
+        // Add handler for loopPointReached
+        videoPlayer.Prepare();
+        videoPlayer.Play();
+        videoPlayer = GameObject.Find(GameControl.CurrentAnimal + "IfYouKnow").GetComponent<UnityEngine.Video.VideoPlayer>();
+        videoPlayer.loopPointReached += EndReached;
         yield return null;
 }
 
+
+
 private void OnGUI()
 {
+        if(Event.current.Equals(Event.KeyboardEvent("return"))) {
+                serialController.SendSerialMessage("b1");
+        }
+        else if(Event.current.Equals(Event.KeyboardEvent("a"))) {
+                serialController.SendSerialMessage("b2");
+        }
+        else if(Event.current.Equals(Event.KeyboardEvent("s"))) {
+                serialController.SendSerialMessage("b3");
+        }
+        else if(Event.current.Equals(Event.KeyboardEvent("d"))) {
+                serialController.SendSerialMessage("b4");
+        }
+        else if(Event.current.Equals(Event.KeyboardEvent("f"))) {
+                serialController.SendSerialMessage("b5");
+        }
 }
 
 public void InputHandler(string data)
@@ -118,4 +163,33 @@ public void InputHandler(string data)
                 break;
         }
 }
+
+async void Prepared(UnityEngine.Video.VideoPlayer vp){
+        System.Random r = new System.Random();
+        Debug.Log("prepared");
+        LoopScenes.RemoveAt(index);
+        if(LoopScenes.Count < 1) {
+                LoopScenes.AddRange(loopscenes);
+        }
+        index = r.Next(0, LoopScenes.Count);
+        int seconds = r.Next(3, 7);
+        Debug.Log("gimme" + seconds.ToString());
+        await Task.Delay(TimeSpan.FromSeconds(seconds));
+        vp.renderMode = UnityEngine.Video.VideoRenderMode.CameraNearPlane;
+        Debug.Log("Done?");
+        vp.Play();
+        audioSource.Play();
+
+}
+
+void EndReached(UnityEngine.Video.VideoPlayer vp){
+        audioSource =  GameObject.Find(GameControl.CurrentAnimal + LoopScenes[index] + "_1").GetComponent<AudioSource>();
+        vp.renderMode = UnityEngine.Video.VideoRenderMode.CameraFarPlane;
+        vp.playOnAwake = false;
+        vp.url = "Assets/Movies/" + GameControl.CurrentAnimal + LoopScenes[index] + ".mp4";
+        Debug.Log("Fetching" + LoopScenes[index]);
+        vp.isLooping = false;
+        vp.Prepare();
+}
+
 }
