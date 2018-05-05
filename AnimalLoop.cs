@@ -53,7 +53,7 @@ void Start(){
         index = rand.Next(0, LoopScenes.Count);
         audioSource = GameObject.Find(GameControl.CurrentAnimal + LoopScenes[index] + "_1").GetComponent<AudioSource>();
         videoPlayer.url = "Assets/Movies/" + GameControl.CurrentAnimal + LoopScenes[index] + ".mp4";
-        Debug.Log("Fetching" + LoopScenes[index]);
+        // Debug.Log("Fetching" + LoopScenes[index]);
         videoPlayer.isLooping = false;
         // Add handler for loopPointReached
         videoPlayer.loopPointReached += LoopClipEndReached;
@@ -102,7 +102,7 @@ public IEnumerator LoadNextScene(string sceneName)
 
 private void OnGUI()
 {
-        if(Event.current.Equals(Event.KeyboardEvent("return"))) {
+        if(Event.current.Equals(Event.KeyboardEvent("g"))) {
                 serialController.SendSerialMessage("b1");
         }
         else if(Event.current.Equals(Event.KeyboardEvent("a"))) {
@@ -277,7 +277,7 @@ void RandomAgain(UnityEngine.Video.VideoPlayer vp){
                 SceneManager.LoadScene(GameControl.CurrentAnimal + "Mini");
         }
         else{
-                SceneManager.LoadScene("Randomizer");
+                SceneManager.LoadScene("PressButton");
         }
 
 }

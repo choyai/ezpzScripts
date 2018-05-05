@@ -6,23 +6,41 @@ using UnityEngine.SceneManagement;
 
 public class Randomizer : MonoBehaviour
 {
-
+public SerialController serialController;
+public UnityEngine.Video.VideoPlayer videoPlayer;
+public AudioSource audioSource;
+void OnEnable()
+{
+        serialController = GameObject.Find("SerialController").GetComponent<SerialController>();
+        GameControl.Button1Count = 0;
+        GameControl.Button2Count = 0;
+        GameControl.Button3Count = 0;
+        GameControl.Button4Count = 0;
+        GameControl.Button5Count = 0;
+}
 // Use this for initialization
 void Start()
 {
         RandomScene();
+        serialController.SendSerialMessage("q");
+        videoPlayer = GameObject.Find("Main Camera").AddComponent<UnityEngine.Video.VideoPlayer>();
+        videoPlayer.playOnAwake = false;
+        audioSource = GameObject.Find("PressButtonLoop" + "_1").GetComponent<AudioSource>();
+        videoPlayer.url = "Assets/Movies/" + "PressButtonLoop" + ".mp4";
+
+        videoPlayer.isLooping = true;
+        // Add handler for loopPointReached
+        videoPlayer.prepareCompleted += Prepared;
+        videoPlayer.Prepare();
 }
 
 // Update is called once per frame
 void Update()
 {
-        // if(GameControl.Animals.Count > 4) {
-        StartCoroutine(LoadNextScene(GameControl.CurrentAnimal + "Intro"));
-        // }
-        // else
-        // {
-        // StartCoroutine(LoadNextScene())
-        // }
+        if (GameControl.Button1Count > 0 && GameControl.Button2Count > 0 && GameControl.Button3Count > 0 && GameControl.Button4Count > 0 && GameControl.Button5Count > 0)
+        {
+                StartCoroutine(LoadNextScene(GameControl.CurrentAnimal + "Intro"));
+        }
 }
 
 public IEnumerator LoadNextScene(string sceneName)
@@ -40,7 +58,23 @@ public IEnumerator LoadNextScene(string sceneName)
         }
 
 }
-
+void OnGUI(){
+        if(Event.current.Equals(Event.KeyboardEvent("g"))) {
+                serialController.SendSerialMessage("b1");
+        }
+        else if(Event.current.Equals(Event.KeyboardEvent("a"))) {
+                serialController.SendSerialMessage("b2");
+        }
+        else if(Event.current.Equals(Event.KeyboardEvent("s"))) {
+                serialController.SendSerialMessage("b3");
+        }
+        else if(Event.current.Equals(Event.KeyboardEvent("d"))) {
+                serialController.SendSerialMessage("b4");
+        }
+        else if(Event.current.Equals(Event.KeyboardEvent("f"))) {
+                serialController.SendSerialMessage("b5");
+        }
+}
 public string RandomScene()
 {
         System.Random r = new System.Random();
@@ -79,4 +113,17 @@ public void InputHandler(string data)
         }
 
 }
+void Prepared(UnityEngine.Video.VideoPlayer vp)
+{
+        vp.renderMode = UnityEngine.Video.VideoRenderMode.CameraNearPlane;
+        vp.Play();
+        audioSource.Play();
+        vp.loopPointReached -= Prepared;
+}
+
+void EndReached(UnityEngine.Video.VideoPlayer vp)
+{
+        SceneManager.LoadScene("PressButton");
+}
+
 }

@@ -43,7 +43,7 @@ private void Update()
 								{
 																//send stop message
 																serialController.SendSerialMessage("s");
-																SceneManager.LoadScene("Randomizer");
+																SceneManager.LoadScene("PressButton");
 								}
 								string message = serialController.ReadSerialMessage();
 
@@ -61,7 +61,7 @@ private void Update()
 }
 
 void OnGUI(){
-								if(Event.current.Equals(Event.KeyboardEvent("return")))
+								if(Event.current.Equals(Event.KeyboardEvent("g")))
 								{
 																serialController.SendSerialMessage("b1");
 								}
@@ -88,7 +88,7 @@ void Prepared(UnityEngine.Video.VideoPlayer vp){
 
 void EndReached(UnityEngine.Video.VideoPlayer vp)
 {
-								SceneManager.LoadScene("Randomizer");
+								SceneManager.LoadScene("PressButton");
 }
 
 public void InputHandler(string data)
