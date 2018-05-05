@@ -11,35 +11,51 @@
 #include "Timer.h"
 
 RFID RC522(SDA_DIO, RESET_DIO);
-String recievedata;
+int recievedata;
 
 int mode; // mode
 
 //define pin
 int ledred_pin = 2, ledgreen_pin = 3,ledblue_pin = 4; //led rgb pin
-int fan_pin = 12; //fan pin
-int vibra_pin1 = 12,vibra_pin2=13; //vibrating motor pin
+int fan_pin = 34; //fan pin
 int led1_pin = 22,led2_pin = 24,led3_pin = 26; //led pin
 int bubble_pin = 28; //bubble pin
 int uv_pin = 53; // uv pin
+int vi_pin = 30;
 int b1_pin = 39,b2_pin = 41, b3_pin = 43, b4_pin = 45, b5_pin = 47, b6_pin = 49;
+int output_pin[10] = {ledred_pin, ledgreen_pin,ledblue_pin,fan_pin,led1_pin,led2_pin,led3_pin,bubble_pin,uv_pin,vi_pin};
+int lightmap[11] = {14,15,16,17,18,19,20,21,23,25,27};
+int button[6] = {b1_pin,b2_pin,b3_pin,b4_pin,b5_pin,b6_pin};
 
+
+
+int b1,b2,b3,b4,b5,b6;
 
 //define timer
-unsigned long ledred_t,ledgreen_t,ledblue_t,fan_t,vibra_t,led1_t,led2_t,led3_t,bubble_t,uv_t;
+unsigned long t;
 
-
+int exitloop;
+int switch_off = 0;
+int exitAnimalsLoop = 0;
 
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(57600); //baud rate = 57600
-
   //RFID set up
   SPI.begin();
   RC522.init();
-  pinMode(b1_pin,OUTPUT);pinMode(b2_pin,OUTPUT);pinMode(b3_pin,OUTPUT);pinMode(b4_pin,OUTPUT);pinMode(b5_pin,OUTPUT);pinMode(b6_pin,OUTPUT);
-  ledred_t = millis();ledgreen_t = millis(); ledblue_t = millis();fan_t = millis();vibra_t = millis();led1_t = millis();led2_t = millis(); led3_t = millis(); bubble_t = millis(); uv_t = millis();
+  for(int i=0;i<6;i++){
+    pinMode(button[i], INPUT);
+  } 
+  for(int i=0;i<=9;i++){
+    pinMode(output_pin[i],OUTPUT);
+  }
+  for(int i=0;i<11;i++){
+    pinMode(lightmap[i],OUTPUT);
+  }
+  t = millis();
+
   
 }
 
@@ -92,39 +108,199 @@ void setup() {
 
     return result;  
 }
+/*
+ * mode 0 rfid
+ * mode 1 animals
+ * mode 2 random map
+ * mode 3 interval
+ */
+
+ // mode 2
+unsigned long tlight;
+unsigned long tlmap;
+int lighton;
+int x;
+
+// mode 3
+unsigned long tr,tg,tb,tv,tf,te,tu;
+
+
 
 void loop() {
   // put your main code here, to run repeatedly:
-//  if (Serial.available()){
-//    recievedata = Serial.read();
-//  }
-//  
-//  if (mode==1){
-//    if (RC522.isCard()){
-//      RC522.readCardSerial();
-//      Serial.println("Card detected:");
-//      for(int i=0;i<5;i++)
-//      {
-//      Serial.print(RC522.serNum[i],DEC);
-//      //Serial.print(RC522.serNum[i],HEX); //to print card detail in Hexa Decimal format
-//      }
-//      Serial.println();
-//      Serial.println();
-//       }
-//      delay(1000);
-//    }
-//  else if (mode == 2){
-//  }
-//  else if (mode == 3){
-//    
-//  }
-
-  if (RC522.isCard()){
-    RC522.readCardSerial();
-    Serial.println(rfid_check(RC522.serNum[1]));
-    delay(1000);
+  if (Serial.available()>0){
+    recievedata = Serial.read();
+    mode = recievedata;
+    t = millis();
+    if (mode == 1){
+      exitAnimalsLoop = 0;
+    }
+    if (mode == 2){
+      tlight = millis();
+      tlmap = millis();
+      lighton = 1;
+      x = 0;
+    }
   }
-
-
+  if (mode == 0){
+    exitloop = 0;
+    while(exitloop == 0){
+      if(Serial.available()>0){
+        char data = Serial.read();
+        if (data == 's'){
+          exitloop = 1;
+          mode = 3;
+        }
+      }
+      if (RC522.isCard()){
+        RC522.readCardSerial();
+        Serial.println(rfid_check(RC522.serNum[1]));
+        delay(1000);
+      }
+    }
+  }
+  else if (mode == 1){
+    while(exitAnimalsLoop  == 0){
+      if(Serial.available()>0){
+        char data = Serial.read();
+        if (data =='r'){
+          digitalWrite(ledred_pin,HIGH);
+          digitalWrite(led1_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+          tr = millis();
+        }
+        else if (data == 'g'){
+          digitalWrite(ledgreen_pin,HIGH);
+          digitalWrite(led1_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+          tg = millis();
+        } 
+        else if (data == 'b'){
+          digitalWrite(ledblue_pin,HIGH);
+          digitalWrite(led1_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+          tb = millis();
+        }
+        else if (data == 'v'){
+          digitalWrite(vi_pin,HIGH);
+          tv = millis();
+        }
+        else if (data == 'f'){
+          digitalWrite(fan_pin,HIGH);
+          tf = millis();
+        }
+        else if (data == 'e'){        //bubble
+           digitalWrite(bubble_pin,HIGH);
+           te = millis();
+        }
+        else if (data == 'u'){
+          digitalWrite(uv_pin,HIGH);
+          tu  = millis();
+        }
+        else if (data == 's'){
+          exitAnimalsLoop = 1;
+          mode = 3;
+        }
+      }
+      if (millis()-tr>=1000){
+        digitalWrite(ledred_pin,LOW);
+        digitalWrite(led1_pin,LOW);
+        digitalWrite(led2_pin,LOW);
+        digitalWrite(led2_pin,LOW);
+      }
+      if (millis()-tg>=1000){
+        digitalWrite(ledgreen_pin,LOW);
+        digitalWrite(led1_pin,LOW);
+        digitalWrite(led2_pin,LOW);
+        digitalWrite(led2_pin,LOW);
+      }
+      if (millis()-tb>=1000){
+        digitalWrite(ledblue_pin,LOW);
+        digitalWrite(led1_pin,LOW);
+        digitalWrite(led2_pin,LOW);
+        digitalWrite(led2_pin,LOW);
+      }
+      if(millis()-tv>=1000){
+        digitalWrite(vi_pin,LOW);
+      }
+      if(millis()-tf>=1000){
+        digitalWrite(fan_pin,LOW);
+      } 
+      if(millis()-tu>=1000){
+        digitalWrite(uv_pin,LOW);
+      }
+      if(millis()-te >= 1000){
+        digitalWrite(bubble_pin,LOW);
+      }
+    }
+  }
+  else if (mode == 2){
+    if(millis()-tlight >=1000){
+      if(lighton == 1){
+        digitalWrite(ledred_pin,HIGH);
+        digitalWrite(ledgreen_pin,HIGH);
+        digitalWrite(ledblue_pin,HIGH);
+        digitalWrite(led1_pin,HIGH);
+        digitalWrite(led2_pin,HIGH);
+        digitalWrite(led3_pin,HIGH);
+        lighton = 0;
+      }
       
+      else if (lighton == 0){
+         digitalWrite(ledred_pin,LOW);
+         digitalWrite(ledgreen_pin,LOW);
+         digitalWrite(ledblue_pin,LOW);
+         digitalWrite(led1_pin,LOW);
+         digitalWrite(led2_pin,LOW);
+         digitalWrite(led3_pin,LOW);
+         lighton = 1;
+      }
+    }
+    if(millis() - tlmap >= 800){
+      for(int i; i<11; i++){
+        digitalWrite(lightmap[i],LOW);
+      }
+      digitalWrite(lightmap[x],HIGH);
+      x++;
+   }
+      
+  }
+  else if (mode == 3){
+    if(switch_off == 0){
+      for(int i = 0;i<=9;i++){
+        digitalWrite(output_pin[i],LOW);
+      }
+      switch_off = 1;
+    }
+    
+  }
+  if(Serial.available()){
+    Serial.println(Serial.readString());
+  }
+  if(digitalRead(b1_pin)<b1){
+    Serial.println("b1");
+  }
+  if(digitalRead(b2_pin)<b2){
+    Serial.println("b2");
+  }
+  if(digitalRead(b3_pin)<b3){
+    Serial.println("b3");
+  }
+  if(digitalRead(b4_pin)<b4){
+    Serial.println("b4");
+  }
+  if(digitalRead(b5_pin)< b5){
+    Serial.println("b5");
+  }
+  
+  b1 = digitalRead(b1_pin);
+  b2 = digitalRead(b2_pin);
+  b3 = digitalRead(b3_pin);
+  b4 = digitalRead(b4_pin);
+  b5 = digitalRead(b5_pin);
+  
+
 }
