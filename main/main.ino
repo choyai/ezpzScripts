@@ -11,7 +11,7 @@
 #include "Timer.h"
 
 RFID RC522(SDA_DIO, RESET_DIO);
-int recievedata;
+String receivedata;
 
 int mode; // mode
 
@@ -129,8 +129,8 @@ unsigned long tr,tg,tb,tv,tf,te,tu;
 void loop() {
   // put your main code here, to run repeatedly:
   if (Serial.available()>0){
-    recievedata = Serial.read();
-    mode = recievedata;
+    receivedata = Serial.read();
+    mode = receivedata.toInt();
     t = millis();
     if (mode == 1){
       exitAnimalsLoop = 0;
