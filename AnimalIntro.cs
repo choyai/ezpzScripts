@@ -5,17 +5,17 @@ using UnityEngine.SceneManagement;
 
 public class AnimalIntro : MonoBehaviour
 {
-    private void Awake()
-    {
+private void Awake()
+{
         GameControl.Button1Count = 0;
         GameControl.Button2Count = 0;
         GameControl.Button3Count = 0;
         GameControl.Button4Count = 0;
         GameControl.Button5Count = 0;
 
-    }
-    void Start()
-    {
+}
+void Start()
+{
         // Will attach a VideoPlayer to the main camera.
         GameObject camera = GameObject.Find("Main Camera");
         var videoPlayer = camera.AddComponent<UnityEngine.Video.VideoPlayer>();
@@ -49,17 +49,18 @@ public class AnimalIntro : MonoBehaviour
         // associated with this preparation one can use videoPlayer.Prepare() along with
         // its prepareCompleted event.
         videoPlayer.Play();
-    }
+}
 
-    private void Update()
-    {
+private void Update()
+{
 
-    }
+}
 
 
 
-    void EndReached(UnityEngine.Video.VideoPlayer vp)
-    {
+void EndReached(UnityEngine.Video.VideoPlayer vp)
+{
+
         SceneManager.LoadScene(GameControl.CurrentAnimal + "Loop");
-    }
+}
 }
