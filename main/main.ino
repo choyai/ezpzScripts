@@ -124,6 +124,8 @@ int x;
 // mode 3
 unsigned long tr,tg,tb,tv,tf,te,tu;
 
+int red_blink;
+int red_on;
 
 
 void loop() {
@@ -200,29 +202,53 @@ void loop() {
         char data = Serial.read();
         if (data =='R'){
           digitalWrite(ledred_pin,HIGH);
+          digitalWrite(ledgreen_pin,LOW);
+          digitalWrite(ledblue_pin,LOW);
           digitalWrite(led1_pin,HIGH);
           digitalWrite(led2_pin,HIGH);
           digitalWrite(led2_pin,HIGH);
         }
         else if (data == 'r'){                 
           digitalWrite(ledred_pin,LOW);
+          digitalWrite(ledgreen_pin,LOW);
+          digitalWrite(ledblue_pin,LOW);
           digitalWrite(led1_pin,HIGH);
           digitalWrite(led2_pin,HIGH);
           digitalWrite(led2_pin,HIGH);
         }
+        else if (data == 'P'){
+          red_blink = 1;
+          digitalWrite(ledred_pin,HIGH);
+          digitalWrite(ledgreen_pin,LOW);
+          digitalWrite(ledblue_pin,LOW);
+          digitalWrite(led1_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+          red_on = 1;
+          tr = millis();
+        }
+        else if (data == 'p'){
+          red_blink = 0;
+        }
         else if (data == 'G'){
+          digitalWrite(ledred_pin,LOW);
           digitalWrite(ledgreen_pin,HIGH);
+          digitalWrite(ledblue_pin,LOW);
           digitalWrite(led1_pin,HIGH);
           digitalWrite(led2_pin,HIGH);
           digitalWrite(led2_pin,HIGH);
         } 
-        else if (data == 'g'){              
+        else if (data == 'g'){
+          digitalWrite(ledred_pin,LOW);              
           digitalWrite(ledgreen_pin,LOW);
+          digitalWrite(ledblue_pin,LOW);
           digitalWrite(led1_pin,HIGH);
           digitalWrite(led2_pin,HIGH);
           digitalWrite(led2_pin,HIGH);
         }
         else if (data == 'B'){
+          digitalWrite(ledred_pin,LOW);
+          digitalWrite(ledgreen_pin,LOW);
           digitalWrite(ledblue_pin,HIGH);
           digitalWrite(led1_pin,HIGH);
           digitalWrite(led2_pin,HIGH);
@@ -280,6 +306,24 @@ void loop() {
         else if (data == 's'){
           exitAnimalsLoop = 1;
           mode = 3;
+        }
+      }
+      if (millis()-tr >= 1000 && red_blink ==1){
+        if (red_on == 0){
+          digitalWrite(ledred_pin,HIGH);
+          digitalWrite(ledgreen_pin,LOW);
+          digitalWrite(ledblue_pin,LOW);
+          digitalWrite(led1_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+        }
+        else if (red_on == 1){
+          digitalWrite(ledred_pin,LOW);
+          digitalWrite(ledgreen_pin,LOW);
+          digitalWrite(ledblue_pin,LOW);
+          digitalWrite(led1_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
         }
       }
     }
