@@ -76,34 +76,34 @@ void setup() {
 
     RC522.readCardSerial();
     if (serNum == 254){
-      result = "Be";
+      result = "Bear";
     }
     else if(serNum == 51){
-      result = "De";
+      result = "Deer";
     }
     else if(serNum == 165){
-      result = "Li";
+      result = "Lion";
     }
     else if(serNum == 3){
-      result = "El";
+      result = "Elephant";
     }
     else if(serNum == 218){
-      result = "Sn";
+      result = "Snake";
     }
     else if(serNum == 219){
-      result = "Gi";
+      result = "Giraffe";
     }
     else if(serNum == 204){
-      result = "Rh";
+      result = "Rhino";
     }
     else if(serNum == 11){
-      result = "Sh";
+      result = "Sheep";
     }
     else if(serNum == 103){
-      result = "Mo";
+      result = "Monkey";
     }
     else if(serNum == 26){
-      result = "Sq";
+      result = "Squirrel";
     }
 
     return result;  
