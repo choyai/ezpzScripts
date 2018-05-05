@@ -43,7 +43,7 @@ void Start(){
         System.Random rand = new System.Random();
 
         //send message to start receiving data
-        serialController.SendSerialMessage("q");
+        serialController.SendSerialMessage("0");
 
         // Will attach a VideoPlayer to the main camera.
         GameObject camera = GameObject.Find("Main Camera");
@@ -165,6 +165,7 @@ public void InputHandler(string data)
                 correct = true;
                 answered = true;
                 serialController.SendSerialMessage("c");
+                serialController.SendSerialMessage("1");
                 if(videoPlayer.isPlaying) {
                         videoPlayer.renderMode = UnityEngine.Video.VideoRenderMode.CameraFarPlane;
                         videoPlayer.Stop();
@@ -186,7 +187,6 @@ public void InputHandler(string data)
                         videoPlayer.loopPointReached += ansEndReached;
                         videoPlayer.Prepare();
                 }
-                serialController.SendSerialMessage("s");
         }
         else {
                 correct = false;
@@ -213,7 +213,6 @@ public void InputHandler(string data)
                         videoPlayer.loopPointReached += ansEndReached;
                         videoPlayer.Prepare();
                 }
-                serialController.SendSerialMessage("s");
         }
 }
 
@@ -242,6 +241,12 @@ async void PreparedAns(UnityEngine.Video.VideoPlayer vp){
         vp.Play();
         audioSource.Play();
         videoPlayer.prepareCompleted -= PreparedAns;
+        if(correct && correctplayed) {
+                switch(GameControl.CurrentAnimal) {
+                case "":
+                        break;
+                }
+        }
 }
 
 void LoopClipEndReached(UnityEngine.Video.VideoPlayer vp){
@@ -254,7 +259,7 @@ void LoopClipEndReached(UnityEngine.Video.VideoPlayer vp){
         vp.loopPointReached += Prepared;
         vp.Prepare();
 }
-
+public bool correctplayed = false;
 void ansEndReached(UnityEngine.Video.VideoPlayer vp){
         if(correct) {
                 videoPlayer.renderMode = UnityEngine.Video.VideoRenderMode.CameraFarPlane;
@@ -265,6 +270,7 @@ void ansEndReached(UnityEngine.Video.VideoPlayer vp){
                 videoPlayer.Prepare();
                 videoPlayer.prepareCompleted += PreparedAns;
                 videoPlayer.loopPointReached += RandomAgain;
+                correctplayed = true;
         }
         else{
                 answered = false;
