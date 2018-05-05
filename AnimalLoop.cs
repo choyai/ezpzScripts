@@ -95,7 +95,9 @@ public IEnumerator LoadNextScene(string sceneName)
                         asyncOperation.allowSceneActivation = true;
                 }
                 yield return null;
+
         }
+
 
 }
 

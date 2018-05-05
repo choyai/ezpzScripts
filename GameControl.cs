@@ -13,6 +13,7 @@ public static bool Button1 = false, Button2 = false, Button3 = false, Button4 = 
 public static int Button1Count = 0, Button2Count = 0, Button3Count = 0, Button4Count = 0, Button5Count = 0;
 public static string[] animals = new string[]
 {
+
         "Bear",
         "Squirrel",
         "Sheep",
@@ -40,8 +41,10 @@ void Update()
 {
         string message = serialController.ReadSerialMessage();
 
+
         if (message == null)
                 return;
+
 
         // Check if the message is plain data or a connect/disconnect event.
         if (ReferenceEquals(message, SerialController.SERIAL_DEVICE_CONNECTED))
