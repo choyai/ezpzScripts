@@ -147,7 +147,40 @@ void loop() {
     while(exitloop == 0){
       if(Serial.available()>0){
         char data = Serial.read();
-        if (data == 's'){
+        if (data == 'i'){
+          digitalWrite(ledred_pin,HIGH);
+          digitalWrite(led1_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+          digitalWrite(vi_pin,HIGH);
+          delay(500);
+          digitalWrite(led1_pin,LOW);
+          digitalWrite(led2_pin,LOW);
+          digitalWrite(led2_pin,LOW);
+          digitalWrite(vi_pin,LOW);
+          delay(300);
+          digitalWrite(ledred_pin,HIGH);
+          digitalWrite(led1_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+          digitalWrite(vi_pin,HIGH);
+          delay(500);
+          digitalWrite(led1_pin,LOW);
+          digitalWrite(led2_pin,LOW);
+          digitalWrite(led2_pin,LOW);
+          digitalWrite(vi_pin,LOW);   
+        }
+        else if (data == 'c'){
+          digitalWrite(ledgreen_pin,HIGH);
+          digitalWrite(led1_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+          digitalWrite(vi_pin,HIGH);
+          delay(1000);
+          digitalWrite(ledgreen_pin,LOW);
+          digitalWrite(led1_pin,LOW);
+          digitalWrite(led2_pin,LOW);
+          digitalWrite(led2_pin,LOW);
           exitloop = 1;
           mode = 3;
         }
@@ -157,83 +190,97 @@ void loop() {
         Serial.println(rfid_check(RC522.serNum[1]));
         delay(1000);
       }
+      
+      
     }
   }
   else if (mode == 1){
     while(exitAnimalsLoop  == 0){
       if(Serial.available()>0){
         char data = Serial.read();
-        if (data =='r'){
+        if (data =='R'){
           digitalWrite(ledred_pin,HIGH);
           digitalWrite(led1_pin,HIGH);
           digitalWrite(led2_pin,HIGH);
           digitalWrite(led2_pin,HIGH);
-          tr = millis();
         }
-        else if (data == 'g'){
+        else if (data == 'r'){                 
+          digitalWrite(ledred_pin,LOW);
+          digitalWrite(led1_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+        }
+        else if (data == 'G'){
           digitalWrite(ledgreen_pin,HIGH);
           digitalWrite(led1_pin,HIGH);
           digitalWrite(led2_pin,HIGH);
           digitalWrite(led2_pin,HIGH);
-          tg = millis();
         } 
-        else if (data == 'b'){
+        else if (data == 'g'){              
+          digitalWrite(ledgreen_pin,LOW);
+          digitalWrite(led1_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+        }
+        else if (data == 'B'){
           digitalWrite(ledblue_pin,HIGH);
           digitalWrite(led1_pin,HIGH);
           digitalWrite(led2_pin,HIGH);
           digitalWrite(led2_pin,HIGH);
-          tb = millis();
         }
-        else if (data == 'v'){
+         else if (data == 'b'){
+          digitalWrite(ledblue_pin,LOW);
+          digitalWrite(led1_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+        }
+        else if (data == 'W'){
+          digitalWrite(ledred_pin,HIGH);
+          digitalWrite(ledgreen_pin,HIGH);
+          digitalWrite(ledblue_pin,HIGH);
+          digitalWrite(led1_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+        }
+        
+        else if (data == 'w'){
+          digitalWrite(ledred_pin,LOW);
+          digitalWrite(ledgreen_pin,LOW);
+          digitalWrite(ledblue_pin,LOW);
+          digitalWrite(led1_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+          digitalWrite(led2_pin,HIGH);
+        }
+        
+        else if (data == 'V'){
           digitalWrite(vi_pin,HIGH);
-          tv = millis();
+        }
+         else if (data == 'V'){
+          digitalWrite(vi_pin,LOW);
+        }
+        else if (data == 'F'){
+          digitalWrite(fan_pin,HIGH);
+
         }
         else if (data == 'f'){
-          digitalWrite(fan_pin,HIGH);
-          tf = millis();
+          digitalWrite(fan_pin,LOW);
+        }
+        else if (data == 'E'){        //bubble
+           digitalWrite(bubble_pin,HIGH);
         }
         else if (data == 'e'){        //bubble
-           digitalWrite(bubble_pin,HIGH);
-           te = millis();
+           digitalWrite(bubble_pin,LOW);
+        }
+        else if (data == 'U'){
+          digitalWrite(uv_pin,HIGH);
         }
         else if (data == 'u'){
-          digitalWrite(uv_pin,HIGH);
-          tu  = millis();
+          digitalWrite(uv_pin,LOW);
         }
         else if (data == 's'){
           exitAnimalsLoop = 1;
           mode = 3;
         }
-      }
-      if (millis()-tr>=1000){
-        digitalWrite(ledred_pin,LOW);
-        digitalWrite(led1_pin,LOW);
-        digitalWrite(led2_pin,LOW);
-        digitalWrite(led2_pin,LOW);
-      }
-      if (millis()-tg>=1000){
-        digitalWrite(ledgreen_pin,LOW);
-        digitalWrite(led1_pin,LOW);
-        digitalWrite(led2_pin,LOW);
-        digitalWrite(led2_pin,LOW);
-      }
-      if (millis()-tb>=1000){
-        digitalWrite(ledblue_pin,LOW);
-        digitalWrite(led1_pin,LOW);
-        digitalWrite(led2_pin,LOW);
-        digitalWrite(led2_pin,LOW);
-      }
-      if(millis()-tv>=1000){
-        digitalWrite(vi_pin,LOW);
-      }
-      if(millis()-tf>=1000){
-        digitalWrite(fan_pin,LOW);
-      } 
-      if(millis()-tu>=1000){
-        digitalWrite(uv_pin,LOW);
-      }
-      if(millis()-te >= 1000){
-        digitalWrite(bubble_pin,LOW);
       }
     }
   }
