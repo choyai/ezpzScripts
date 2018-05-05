@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class Intro : MonoBehaviour
 {
 public SerialController serialController;
-
+public UnityEngine.Video.VideoPlayer videoPlayer;
 // Use this for initialization
 void OnEnable()
 {
@@ -14,6 +14,8 @@ void OnEnable()
 }
 void Start(){
         serialController.SendSerialMessage("q");
+        videoPlayer = GameObject.Find("Main Camera").GetComponent<UnityEngine.Video.VideoPlayer>();
+        videoPlayer.loopPointReached += EndReached;
 }
 
 void OnGUI(){
@@ -43,4 +45,10 @@ void Update()
                 SceneManager.LoadScene("Randomizer");
         }
 }
+
+void EndReached(UnityEngine.Video.VideoPlayer vp)
+{
+        SceneManager.LoadScene("Randomizer");
+}
+
 }
