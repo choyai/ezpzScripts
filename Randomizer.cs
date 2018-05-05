@@ -16,8 +16,13 @@ void Start()
 // Update is called once per frame
 void Update()
 {
+        // if(GameControl.Animals.Count > 4) {
         StartCoroutine(LoadNextScene(GameControl.CurrentAnimal + "Intro"));
-
+        // }
+        // else
+        // {
+        // StartCoroutine(LoadNextScene())
+        // }
 }
 
 public IEnumerator LoadNextScene(string sceneName)

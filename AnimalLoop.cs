@@ -10,7 +10,15 @@ public class AnimalLoop : MonoBehaviour
 {
 public SerialController serialController;
 public AudioSource audioSource;
+public bool answered;
+public bool correct;
 public UnityEngine.Video.VideoPlayer videoPlayer;
+public static string[] minigames = new string[] {
+        // "Monkey",
+        // "Rhino"
+};
+public static List<string> minigameslist = new List<string>(minigames);
+
 public static string[] loopscenes = new string[]
 {
         "IfYouKnow",
@@ -21,6 +29,8 @@ public int index;
 // Use this for initialization
 void Awake()
 {
+        answered = false;
+        correct = false;
         GameControl.Button1Count = 0;
         GameControl.Button2Count = 0;
         GameControl.Button3Count = 0;
@@ -37,7 +47,7 @@ void Start(){
 
         // Will attach a VideoPlayer to the main camera.
         GameObject camera = GameObject.Find("Main Camera");
-        var videoPlayer = camera.AddComponent<UnityEngine.Video.VideoPlayer>();
+        videoPlayer = camera.AddComponent<UnityEngine.Video.VideoPlayer>();
         videoPlayer.playOnAwake = false;
 
         index = rand.Next(0, LoopScenes.Count);
@@ -46,7 +56,7 @@ void Start(){
         Debug.Log("Fetching" + LoopScenes[index]);
         videoPlayer.isLooping = false;
         // Add handler for loopPointReached
-        videoPlayer.loopPointReached += EndReached;
+        videoPlayer.loopPointReached += LoopClipEndReached;
         videoPlayer.prepareCompleted += Prepared;
         videoPlayer.Prepare();
 }
@@ -54,13 +64,7 @@ void Start(){
 // Update is called once per frame
 void Update()
 {
-
-        if (GameControl.Button1Count > 0 && GameControl.Button2Count > 0 && GameControl.Button3Count > 0 && GameControl.Button4Count > 0 && GameControl.Button5Count > 0)
-        {
-                //send stop message
-                serialController.SendSerialMessage("s");
-                SceneManager.LoadScene("Randomizer");
-        }
+//This one checks the state of the ofdjfoe
         string message = serialController.ReadSerialMessage();
 
         if (message == null)
@@ -94,21 +98,6 @@ public IEnumerator LoadNextScene(string sceneName)
         }
 
 }
-public IEnumerator LoadShortClip(string vidName){
-        // Will attach a VideoPlayer to the main camera.
-        GameObject camera = GameObject.Find("Main Camera");
-        var videoPlayer = camera.AddComponent<UnityEngine.Video.VideoPlayer>();
-        videoPlayer.playOnAwake = false;
-        videoPlayer.url = "Assets/Movies/" + GameControl.CurrentAnimal + "IfYouKnow.mp4";
-        videoPlayer.isLooping = false;
-        // Add handler for loopPointReached
-        videoPlayer.Prepare();
-        videoPlayer.Play();
-        videoPlayer = GameObject.Find(GameControl.CurrentAnimal + "IfYouKnow").GetComponent<UnityEngine.Video.VideoPlayer>();
-        videoPlayer.loopPointReached += EndReached;
-        yield return null;
-}
-
 
 
 private void OnGUI()
@@ -127,6 +116,12 @@ private void OnGUI()
         }
         else if(Event.current.Equals(Event.KeyboardEvent("f"))) {
                 serialController.SendSerialMessage("b5");
+        }
+        else if(Event.current.Equals(Event.KeyboardEvent("c"))) {
+                serialController.SendSerialMessage(GameControl.CurrentAnimal);
+        }
+        else if(Event.current.Equals(Event.KeyboardEvent("i"))) {
+                serialController.SendSerialMessage("wrong");
         }
 }
 
@@ -162,6 +157,55 @@ public void InputHandler(string data)
                 }
                 break;
         }
+        if(data == GameControl.CurrentAnimal && !answered) {
+                correct = true;
+                answered = true;
+                if(videoPlayer.isPlaying) {
+                        videoPlayer.renderMode = UnityEngine.Video.VideoRenderMode.CameraFarPlane;
+                        videoPlayer.Stop();
+                        audioSource.Stop();
+                        videoPlayer.url = "Assets/Movies/" + GameControl.CurrentAnimal + "Correct" + ".mp4";
+                        audioSource = GameObject.Find(GameControl.CurrentAnimal + "Correct").GetComponent<AudioSource>();
+                        videoPlayer.prepareCompleted -= LoopClipEndReached;
+                        videoPlayer.prepareCompleted += PreparedAns;
+                        videoPlayer.loopPointReached += ansEndReached;
+                        videoPlayer.Prepare();
+                }
+                else{
+                        videoPlayer.renderMode = UnityEngine.Video.VideoRenderMode.CameraFarPlane;
+                        videoPlayer.url = "Assets/Movies/" + GameControl.CurrentAnimal + "Correct" + ".mp4";
+                        audioSource = GameObject.Find(GameControl.CurrentAnimal + "Correct").GetComponent<AudioSource>();
+                        videoPlayer.prepareCompleted -= Prepared;
+                        videoPlayer.prepareCompleted += PreparedAns;
+                        videoPlayer.loopPointReached += ansEndReached;
+                        videoPlayer.Prepare();
+                }
+                serialController.SendSerialMessage("s");
+        }
+        else if (data == "wrong" && !answered) {
+                correct = false;
+                answered = true;
+                if(videoPlayer.isPlaying) {
+                        videoPlayer.renderMode = UnityEngine.Video.VideoRenderMode.CameraFarPlane;
+                        videoPlayer.prepareCompleted -= LoopClipEndReached;
+                        videoPlayer.Stop();
+                        audioSource.Stop();
+                        videoPlayer.url = "Assets/Movies/" + "Wrong" + GameControl.CurrentAnimal + ".mp4";
+                        audioSource = GameObject.Find("Wrong" + GameControl.CurrentAnimal).GetComponent<AudioSource>();
+                        videoPlayer.prepareCompleted += PreparedAns;
+                        videoPlayer.loopPointReached += ansEndReached;
+                        videoPlayer.Prepare();
+                }
+                else{
+                        videoPlayer.url = "Assets/Movies/" + "Wrong" + GameControl.CurrentAnimal + ".mp4";
+                        audioSource = GameObject.Find("Wrong" + GameControl.CurrentAnimal).GetComponent<AudioSource>();
+                        videoPlayer.prepareCompleted -= Prepared;
+                        videoPlayer.prepareCompleted += PreparedAns;
+                        videoPlayer.loopPointReached += ansEndReached;
+                        videoPlayer.Prepare();
+                }
+                serialController.SendSerialMessage("s");
+        }
 }
 
 async void Prepared(UnityEngine.Video.VideoPlayer vp){
@@ -178,18 +222,63 @@ async void Prepared(UnityEngine.Video.VideoPlayer vp){
         vp.renderMode = UnityEngine.Video.VideoRenderMode.CameraNearPlane;
         Debug.Log("Done?");
         vp.Play();
-        audioSource.Play();
-
+        if(!audioSource.isPlaying) {
+                audioSource.Play();
+        }
+        vp.loopPointReached -= Prepared;
 }
 
-void EndReached(UnityEngine.Video.VideoPlayer vp){
+async void PreparedAns(UnityEngine.Video.VideoPlayer vp){
+        vp.renderMode = UnityEngine.Video.VideoRenderMode.CameraNearPlane;
+        vp.Play();
+        audioSource.Play();
+        videoPlayer.prepareCompleted -= PreparedAns;
+}
+
+void LoopClipEndReached(UnityEngine.Video.VideoPlayer vp){
         audioSource =  GameObject.Find(GameControl.CurrentAnimal + LoopScenes[index] + "_1").GetComponent<AudioSource>();
         vp.renderMode = UnityEngine.Video.VideoRenderMode.CameraFarPlane;
         vp.playOnAwake = false;
         vp.url = "Assets/Movies/" + GameControl.CurrentAnimal + LoopScenes[index] + ".mp4";
         Debug.Log("Fetching" + LoopScenes[index]);
         vp.isLooping = false;
+        vp.loopPointReached += Prepared;
         vp.Prepare();
 }
 
+void ansEndReached(UnityEngine.Video.VideoPlayer vp){
+        if(correct) {
+                videoPlayer.renderMode = UnityEngine.Video.VideoRenderMode.CameraFarPlane;
+                videoPlayer.Stop();
+                audioSource.Stop();
+                videoPlayer.url = "Assets/Movies/" + GameControl.CurrentAnimal + "Ans" + ".mp4";
+                audioSource = GameObject.Find(GameControl.CurrentAnimal + "Ans" + "_1").GetComponent<AudioSource>();
+                videoPlayer.Prepare();
+                videoPlayer.prepareCompleted += PreparedAns;
+                videoPlayer.loopPointReached += RandomAgain;
+        }
+        else{
+                answered = false;
+                audioSource =  GameObject.Find(GameControl.CurrentAnimal + LoopScenes[index] + "_1").GetComponent<AudioSource>();
+                vp.renderMode = UnityEngine.Video.VideoRenderMode.CameraFarPlane;
+                vp.playOnAwake = false;
+                vp.url = "Assets/Movies/" + GameControl.CurrentAnimal + LoopScenes[index] + ".mp4";
+                Debug.Log("Fetching" + LoopScenes[index]);
+                vp.isLooping = false;
+                vp.prepareCompleted += Prepared;
+                vp.loopPointReached += LoopClipEndReached;
+                vp.Prepare();
+        }
+}
+
+void RandomAgain(UnityEngine.Video.VideoPlayer vp){
+        if(minigameslist.Contains(GameControl.CurrentAnimal))
+        {
+                SceneManager.LoadScene(GameControl.CurrentAnimal + "Mini");
+        }
+        else{
+                SceneManager.LoadScene("Randomizer");
+        }
+
+}
 }

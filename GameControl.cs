@@ -16,7 +16,7 @@ public static string[] animals = new string[]
         "Bear",
         "Squirrel",
         "Sheep",
-        "Monkey",
+        //"Monkey",
         "Rhino",
         "Giraffe",
         "Snake",
