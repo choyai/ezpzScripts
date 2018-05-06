@@ -28,7 +28,7 @@ void Start(){
 }
 
 void OnGUI(){
-        GUILayout.Label("Type COM Port number to set COM Port");
+        // GUILayout.Label("Type COM Port number to set COM Port");
         if(Event.current.Equals(Event.KeyboardEvent("1"))) {
                 serialController.portName = "COM1";
         }
