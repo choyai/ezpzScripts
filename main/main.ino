@@ -13,14 +13,14 @@
 RFID RC522(SDA_DIO, RESET_DIO);
 String receivedata;
 
-int mode; // mode
+int mode = 2; // mode
 
 //define pin
 int ledred_pin = 2, ledgreen_pin = 3,ledblue_pin = 4; //led rgb pin
 int fan_pin = 34; //fan pin
 int led1_pin = 22,led2_pin = 24,led3_pin = 26; //led pin
 int bubble_pin = 28; //bubble pin
-int uv_pin = 53; // uv pin
+int uv_pin = 40; // uv pin
 int vi_pin = 30;
 int b1_pin = 39,b2_pin = 41, b3_pin = 43, b4_pin = 45, b5_pin = 47, b6_pin = 49;
 int output_pin[10] = {ledred_pin, ledgreen_pin,ledblue_pin,fan_pin,led1_pin,led2_pin,led3_pin,bubble_pin,uv_pin,vi_pin};
@@ -47,7 +47,7 @@ void setup() {
   RC522.init();
   for(int i=0;i<6;i++){
     pinMode(button[i], INPUT);
-  }
+  } 
   for(int i=0;i<=9;i++){
     pinMode(output_pin[i],OUTPUT);
   }
@@ -55,13 +55,17 @@ void setup() {
     pinMode(lightmap[i],OUTPUT);
   }
   t = millis();
-
-
+  b1 = digitalRead(b1_pin);
+  b2 = digitalRead(b2_pin);
+  b3 = digitalRead(b3_pin);
+  b4 = digitalRead(b4_pin);
+  b5 = digitalRead(b5_pin);
+  
 }
 
 /*
- * receive q: rfid request
- * receive s: stop command
+ * receive q: rfid request  
+ * receive s: stop command 
  *
  * Serial out;
  * b1 = button 1 pressed
@@ -69,7 +73,7 @@ void setup() {
  * b3 = button 3 pressed
  * b4 = button 4 pressed
  * b5 = button 5 pressed
- *
+ * 
  */
  String rfid_check(int serNum){
   String result;
@@ -106,7 +110,7 @@ void setup() {
       result = "Squirrel";
     }
 
-    return result;
+    return result;  
 }
 /*
  * mode 0 rfid
@@ -147,6 +151,7 @@ void loop() {
   if (mode == 0){
     exitloop = 0;
     while(exitloop == 0){
+      Serial.println("Mode 0");
       if(Serial.available()>0){
         char data = Serial.read();
         if (data == 'i'){
@@ -170,7 +175,7 @@ void loop() {
           digitalWrite(led1_pin,LOW);
           digitalWrite(led2_pin,LOW);
           digitalWrite(led2_pin,LOW);
-          digitalWrite(vi_pin,LOW);
+          digitalWrite(vi_pin,LOW);   
         }
         else if (data == 'c'){
           digitalWrite(ledgreen_pin,HIGH);
@@ -192,12 +197,13 @@ void loop() {
         Serial.println(rfid_check(RC522.serNum[1]));
         delay(1000);
       }
-
-
+      
+      
     }
   }
   else if (mode == 1){
     while(exitAnimalsLoop  == 0){
+      Serial.println("Mode 1");
       if(Serial.available()>0){
         char data = Serial.read();
         if (data =='R'){
@@ -208,7 +214,7 @@ void loop() {
           digitalWrite(led2_pin,HIGH);
           digitalWrite(led2_pin,HIGH);
         }
-        else if (data == 'r'){
+        else if (data == 'r'){                 
           digitalWrite(ledred_pin,LOW);
           digitalWrite(ledgreen_pin,LOW);
           digitalWrite(ledblue_pin,LOW);
@@ -237,9 +243,9 @@ void loop() {
           digitalWrite(led1_pin,HIGH);
           digitalWrite(led2_pin,HIGH);
           digitalWrite(led2_pin,HIGH);
-        }
+        } 
         else if (data == 'g'){
-          digitalWrite(ledred_pin,LOW);
+          digitalWrite(ledred_pin,LOW);              
           digitalWrite(ledgreen_pin,LOW);
           digitalWrite(ledblue_pin,LOW);
           digitalWrite(led1_pin,HIGH);
@@ -268,7 +274,7 @@ void loop() {
           digitalWrite(led2_pin,HIGH);
           digitalWrite(led2_pin,HIGH);
         }
-
+        
         else if (data == 'w'){
           digitalWrite(ledred_pin,LOW);
           digitalWrite(ledgreen_pin,LOW);
@@ -277,11 +283,11 @@ void loop() {
           digitalWrite(led2_pin,HIGH);
           digitalWrite(led2_pin,HIGH);
         }
-
+        
         else if (data == 'V'){
           digitalWrite(vi_pin,HIGH);
         }
-         else if (data == 'v'){
+         else if (data == 'V'){
           digitalWrite(vi_pin,LOW);
         }
         else if (data == 'F'){
@@ -308,7 +314,7 @@ void loop() {
           mode = 3;
         }
       }
-      if (millis()-tr >= 1000 && red_blink ==1){
+      if (millis()-tr >= 300 && red_blink ==1){
         if (red_on == 0){
           digitalWrite(ledred_pin,HIGH);
           digitalWrite(ledgreen_pin,LOW);
@@ -316,6 +322,7 @@ void loop() {
           digitalWrite(led1_pin,HIGH);
           digitalWrite(led2_pin,HIGH);
           digitalWrite(led2_pin,HIGH);
+          red_on = 1;
         }
         else if (red_on == 1){
           digitalWrite(ledred_pin,LOW);
@@ -324,11 +331,14 @@ void loop() {
           digitalWrite(led1_pin,HIGH);
           digitalWrite(led2_pin,HIGH);
           digitalWrite(led2_pin,HIGH);
+          red_on = 0;
         }
+        tr = millis();
       }
     }
   }
   else if (mode == 2){
+    Serial.println("mode 2");
     if(millis()-tlight >=1000){
       if(lighton == 1){
         digitalWrite(ledred_pin,HIGH);
@@ -339,7 +349,7 @@ void loop() {
         digitalWrite(led3_pin,HIGH);
         lighton = 0;
       }
-
+      
       else if (lighton == 0){
          digitalWrite(ledred_pin,LOW);
          digitalWrite(ledgreen_pin,LOW);
@@ -350,27 +360,27 @@ void loop() {
          lighton = 1;
       }
     }
-    if(millis() - tlmap >= 800){
+    if(millis() - tlmap >= 300){
       for(int i; i<11; i++){
         digitalWrite(lightmap[i],LOW);
       }
       digitalWrite(lightmap[x],HIGH);
       x++;
+      tlmap = millis();
    }
-
+      
   }
   else if (mode == 3){
+    Serial.println("Mode 3");
     if(switch_off == 0){
       for(int i = 0;i<=9;i++){
         digitalWrite(output_pin[i],LOW);
       }
       switch_off = 1;
     }
-
+    
   }
-  if(Serial.available()){
-    Serial.println(Serial.readString());
-  }
+ 
   if(digitalRead(b1_pin)<b1){
     Serial.println("b1");
   }
@@ -386,12 +396,12 @@ void loop() {
   if(digitalRead(b5_pin)< b5){
     Serial.println("b5");
   }
-
+  
   b1 = digitalRead(b1_pin);
   b2 = digitalRead(b2_pin);
   b3 = digitalRead(b3_pin);
   b4 = digitalRead(b4_pin);
   b5 = digitalRead(b5_pin);
-
+  
 
 }
