@@ -58,7 +58,7 @@ void Update()
 
 private void OnGUI()
 {
-        GUILayout.Label("Press Enter To Advance");
+
 }
 
 public void InputHandler(string data)

@@ -28,6 +28,7 @@ void Start(){
 }
 
 void OnGUI(){
+        GUILayout.Label("Type COM Port number to set COM Port");
         if(Event.current.Equals(Event.KeyboardEvent("g"))) {
                 serialController.SendSerialMessage("b1");
         }
@@ -43,6 +44,11 @@ void OnGUI(){
         else if(Event.current.Equals(Event.KeyboardEvent("f"))) {
                 serialController.SendSerialMessage("b5");
         }
+        for (int i = 1; i < 10; i++) {
+                if(Event.current.Equals(Event.KeyboardEvent(i.ToString()))) {
+                        serialController.portName = "COM" + i.ToString();
+                }
+        }
 }
 
 // Update is called once per frame
@@ -50,10 +56,11 @@ void Update()
 {
         if (GameControl.Button1Count > 0 && GameControl.Button2Count > 0 && GameControl.Button3Count > 0 && GameControl.Button4Count > 0 && GameControl.Button5Count > 0)
         {
-                serialController.SendSerialMessage("s");
+                // serialController.SendSerialMessage("s");
                 SceneManager.LoadScene("HowToPlay");
         }
 }
+
 void Prepared(UnityEngine.Video.VideoPlayer vp)
 {
         vp.renderMode = UnityEngine.Video.VideoRenderMode.CameraNearPlane;

@@ -23,7 +23,7 @@ void Start()
         GameControl.Button4Count = 0;
         GameControl.Button5Count = 0;
         RandomScene();
-        serialController.SendSerialMessage("q");
+        serialController.SendSerialMessage("2");
         videoPlayer = GameObject.Find("Main Camera").AddComponent<UnityEngine.Video.VideoPlayer>();
         videoPlayer.playOnAwake = false;
         audioSource = GameObject.Find("PressButtonLoop" + "_1").GetComponent<AudioSource>();
@@ -41,6 +41,7 @@ void Update()
         if (GameControl.Button1Count > 0 && GameControl.Button2Count > 0 && GameControl.Button3Count > 0 && GameControl.Button4Count > 0 && GameControl.Button5Count > 0)
         {
                 if(GameControl.Animals.Count > 4) {
+                        serialController.SendSerialMessage("3");
                         StartCoroutine(LoadNextScene(GameControl.CurrentAnimal + "Intro"));
                 }
                 else{

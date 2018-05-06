@@ -40,7 +40,7 @@ void Start()
         // Set the video to play. URL supports local absolute or relative paths.
         // Here, using absolute.
         videoPlayer.url = "Assets/Movies/" + GameControl.CurrentAnimal + "Intro.mp4";
-
+        serialController.SendSerialMessage("1");
         // Skip the first 100 frames.
         //videoPlayer.frame = 100;
 
