@@ -29,25 +29,35 @@ void Start(){
 
 void OnGUI(){
         GUILayout.Label("Type COM Port number to set COM Port");
-        if(Event.current.Equals(Event.KeyboardEvent("g"))) {
-                serialController.SendSerialMessage("b1");
+        if(Event.current.Equals(Event.KeyboardEvent("1"))) {
+                serialController.portName = "COM1";
         }
-        else if(Event.current.Equals(Event.KeyboardEvent("a"))) {
-                serialController.SendSerialMessage("b2");
+        else if(Event.current.Equals(Event.KeyboardEvent("2"))) {
+                serialController.portName = "COM2";
         }
-        else if(Event.current.Equals(Event.KeyboardEvent("s"))) {
-                serialController.SendSerialMessage("b3");
+        else if(Event.current.Equals(Event.KeyboardEvent("3"))) {
+                serialController.portName = "COM3";
         }
-        else if(Event.current.Equals(Event.KeyboardEvent("d"))) {
-                serialController.SendSerialMessage("b4");
+        else if(Event.current.Equals(Event.KeyboardEvent("4"))) {
+                serialController.portName = "COM4";
         }
-        else if(Event.current.Equals(Event.KeyboardEvent("f"))) {
-                serialController.SendSerialMessage("b5");
+        else if(Event.current.Equals(Event.KeyboardEvent("5"))) {
+                serialController.portName = "COM5";
         }
-        for (int i = 1; i < 10; i++) {
-                if(Event.current.Equals(Event.KeyboardEvent(i.ToString()))) {
-                        serialController.portName = "COM" + i.ToString();
-                }
+        else if(Event.current.Equals(Event.KeyboardEvent("6"))) {
+                serialController.portName = "COM6";
+        }
+        else if(Event.current.Equals(Event.KeyboardEvent("7"))) {
+                serialController.portName = "COM7";
+        }
+        else if(Event.current.Equals(Event.KeyboardEvent("8"))) {
+                serialController.portName = "COM8";
+        }
+        else if(Event.current.Equals(Event.KeyboardEvent("9"))) {
+                serialController.portName = "COM9";
+        }
+        else if(Event.current.Equals(Event.KeyboardEvent("return"))) {
+                SceneManager.LoadScene("HowToPlay");
         }
 }
 
