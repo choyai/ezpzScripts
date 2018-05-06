@@ -17,10 +17,12 @@ void OnEnable()
 								GameControl.Button4Count = 0;
 								GameControl.Button5Count = 0;
 								serialController = GameObject.Find("SerialController").GetComponent<SerialController>();
+								GameObject oldCam = GameObject.Find("Main Camera");
+								Destroy(oldCam);
 }
 void Start(){
 								serialController.SendSerialMessage("2");
-								videoPlayer = GameObject.Find("Main Camera").AddComponent<UnityEngine.Video.VideoPlayer>();
+								videoPlayer = GameObject.Find("MaiCamera").AddComponent<UnityEngine.Video.VideoPlayer>();
 								videoPlayer.playOnAwake = false;
 
 								videoPlayer.url = "Assets/Movies/" + "PressButton" + ".mp4";
