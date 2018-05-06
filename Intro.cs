@@ -14,7 +14,7 @@ void OnEnable()
         serialController = GameObject.Find("SerialController").GetComponent<SerialController>();
 }
 void Start(){
-        serialController.SendSerialMessage("q");
+        // serialController.SendSerialMessage("q");
         videoPlayer = GameObject.Find("Main Camera").AddComponent<UnityEngine.Video.VideoPlayer>();
         videoPlayer.playOnAwake = false;
         audioSource = GameObject.Find("op" + "_1").GetComponent<AudioSource>();
@@ -29,34 +29,34 @@ void Start(){
 
 void OnGUI(){
         // GUILayout.Label("Type COM Port number to set COM Port");
-        if(Event.current.Equals(Event.KeyboardEvent("1"))) {
-                serialController.portName = "COM1";
-        }
-        else if(Event.current.Equals(Event.KeyboardEvent("2"))) {
-                serialController.portName = "COM2";
-        }
-        else if(Event.current.Equals(Event.KeyboardEvent("3"))) {
-                serialController.portName = "COM3";
-        }
-        else if(Event.current.Equals(Event.KeyboardEvent("4"))) {
-                serialController.portName = "COM4";
-        }
-        else if(Event.current.Equals(Event.KeyboardEvent("5"))) {
-                serialController.portName = "COM5";
-        }
-        else if(Event.current.Equals(Event.KeyboardEvent("6"))) {
-                serialController.portName = "COM6";
-        }
-        else if(Event.current.Equals(Event.KeyboardEvent("7"))) {
-                serialController.portName = "COM7";
-        }
-        else if(Event.current.Equals(Event.KeyboardEvent("8"))) {
-                serialController.portName = "COM8";
-        }
-        else if(Event.current.Equals(Event.KeyboardEvent("9"))) {
-                serialController.portName = "COM9";
-        }
-        else if(Event.current.Equals(Event.KeyboardEvent("return"))) {
+        // if(Event.current.Equals(Event.KeyboardEvent("1"))) {
+        //         serialController.portName = "COM1";
+        // }
+        // else if(Event.current.Equals(Event.KeyboardEvent("2"))) {
+        //         serialController.portName = "COM2";
+        // }
+        // else if(Event.current.Equals(Event.KeyboardEvent("3"))) {
+        //         serialController.portName = "COM3";
+        // }
+        // else if(Event.current.Equals(Event.KeyboardEvent("4"))) {
+        //         serialController.portName = "COM4";
+        // }
+        // else if(Event.current.Equals(Event.KeyboardEvent("5"))) {
+        //         serialController.portName = "COM5";
+        // }
+        // else if(Event.current.Equals(Event.KeyboardEvent("6"))) {
+        //         serialController.portName = "COM6";
+        // }
+        // else if(Event.current.Equals(Event.KeyboardEvent("7"))) {
+        //         serialController.portName = "COM7";
+        // }
+        // else if(Event.current.Equals(Event.KeyboardEvent("8"))) {
+        //         serialController.portName = "COM8";
+        // }
+        // else if(Event.current.Equals(Event.KeyboardEvent("9"))) {
+        //         serialController.portName = "COM9";
+        // }
+        if(Event.current.Equals(Event.KeyboardEvent("return"))) {
                 SceneManager.LoadScene("HowToPlay");
         }
 }

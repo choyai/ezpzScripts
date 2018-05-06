@@ -43,8 +43,9 @@ void Start(){
         System.Random rand = new System.Random();
 
         //send message to start receiving data
-        serialController.SendSerialMessage("0");
-
+        for(int i = 0; i<20; i++) {
+                serialController.SendSerialMessage("0");
+        }
         // Will attach a VideoPlayer to the main camera.
         GameObject camera = GameObject.Find("Main Camera");
         videoPlayer = camera.AddComponent<UnityEngine.Video.VideoPlayer>();
@@ -103,6 +104,11 @@ void Update()
                         }
                         break;
                 }
+        }
+        else if (correct && !correctplayed) {
+                new WaitForSeconds(1);
+                serialController.SendSerialMessage("c");
+                serialController.SendSerialMessage("1");
         }
         //This one checks the state of the ofdjfoe
 
@@ -208,6 +214,7 @@ public void InputHandler(string data)
         if(data == GameControl.CurrentAnimal && !answered) {
                 correct = true;
                 answered = true;
+
                 serialController.SendSerialMessage("c");
                 serialController.SendSerialMessage("1");
                 if(videoPlayer.isPlaying) {
@@ -234,10 +241,11 @@ public void InputHandler(string data)
                 }
         }
 
-        else if (GameControl.Animals.Contains(data) && data != GameControl.CurrentAnimal) {
+        else if (GameControl.Animals.Contains(data) && data != GameControl.CurrentAnimal && !answered) {
                 correct = false;
                 answered = true;
                 serialController.SendSerialMessage("i");
+                Debug.Log("D");
                 if(videoPlayer.isPlaying) {
                         videoPlayer.renderMode = UnityEngine.Video.VideoRenderMode.CameraFarPlane;
                         videoPlayer.prepareCompleted -= Prepared;
@@ -257,8 +265,10 @@ public void InputHandler(string data)
                         videoPlayer.loopPointReached -= LoopClipEndReached;
                         videoPlayer.prepareCompleted += PreparedAns;
                         videoPlayer.loopPointReached += ansEndReached;
+
                         videoPlayer.Prepare();
                 }
+
         }
 }
 
@@ -271,7 +281,7 @@ async void Prepared(UnityEngine.Video.VideoPlayer vp){
         }
         index = r.Next(0, LoopScenes.Count);
         int seconds = r.Next(3, 7);
-        // Debug.Log("gimme" + seconds.ToString());
+        Debug.Log("gimme" + seconds.ToString());
         await Task.Delay(TimeSpan.FromSeconds(seconds));
         vp.renderMode = UnityEngine.Video.VideoRenderMode.CameraNearPlane;
         // Debug.Log("Done?");

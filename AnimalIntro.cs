@@ -132,7 +132,8 @@ void InputHandler(string message){
 
 void EndReached(UnityEngine.Video.VideoPlayer vp)
 {
-
+        serialController.SendSerialMessage("s");
+        serialController.SendSerialMessage("0");
         SceneManager.LoadScene(GameControl.CurrentAnimal + "Loop");
 }
 }
