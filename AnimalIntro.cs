@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class AnimalIntro : MonoBehaviour
 {
+public SerialController serialController;
 private void Awake()
 {
         GameControl.Button1Count = 0;
@@ -12,13 +13,18 @@ private void Awake()
         GameControl.Button3Count = 0;
         GameControl.Button4Count = 0;
         GameControl.Button5Count = 0;
-
 }
+
+public UnityEngine.Video.VideoPlayer videoPlayer;
+
+
 void Start()
 {
+        serialController = GameObject.Find("SerialController").GetComponent<SerialController>();
+
         // Will attach a VideoPlayer to the main camera.
         GameObject camera = GameObject.Find("Main Camera");
-        var videoPlayer = camera.AddComponent<UnityEngine.Video.VideoPlayer>();
+        videoPlayer = camera.AddComponent<UnityEngine.Video.VideoPlayer>();
 
         // Play on awake defaults to true. Set it to false to avoid the url set
         // below to auto-start playback since we're in Start().
@@ -48,11 +54,63 @@ void Start()
         // resources, pre-load a few frames, etc.). To better control the delays
         // associated with this preparation one can use videoPlayer.Prepare() along with
         // its prepareCompleted event.
+        switch(GameControl.CurrentAnimal) {
+
+        case "Elephant":
+                serialController.SendSerialMessage("B");
+
+                break;
+        case "Lion":
+                serialController.SendSerialMessage("R");
+
+                break;
+        default:
+                serialController.SendSerialMessage("G");
+                break;
+        }
         videoPlayer.Play();
+
 }
 
 private void Update()
 {
+        string message = serialController.ReadSerialMessage();
+        switch(GameControl.CurrentAnimal) {
+        case "Bear":
+
+                if(videoPlayer.time == 10f) {
+                        serialController.SendSerialMessage("V");
+                        serialController.SendSerialMessage("F");
+                }
+                if(videoPlayer.time == 11f) {
+                        serialController.SendSerialMessage("v");
+                        serialController.SendSerialMessage("f");
+                }
+                break;
+        case "Elephant":
+
+                if(videoPlayer.time == 8.5f) {
+                        serialController.SendSerialMessage("V");
+                        serialController.SendSerialMessage("f");
+                }
+                if(videoPlayer.time == 9f) {
+                        serialController.SendSerialMessage("v");
+                        serialController.SendSerialMessage("f");
+                }
+                break;
+        case "Lion":
+
+                if(videoPlayer.time == 2f) {
+                        serialController.SendSerialMessage("V");
+                        serialController.SendSerialMessage("F");
+                }
+                if(videoPlayer.time == 3f) {
+                        serialController.SendSerialMessage("v");
+                        serialController.SendSerialMessage("f");
+                }
+                break;
+
+        }
 
 }
 

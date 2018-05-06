@@ -47,7 +47,7 @@ void Update()
                         StartCoroutine(LoadNextScene("Dog"));
                 }
         }
-        Debug.Log(GameControl.Button1Count > 0 && GameControl.Button2Count > 0 && GameControl.Button3Count > 0 && GameControl.Button4Count > 0 && GameControl.Button5Count > 0);
+        // Debug.Log(GameControl.Button1Count > 0 && GameControl.Button2Count > 0 && GameControl.Button3Count > 0 && GameControl.Button4Count > 0 && GameControl.Button5Count > 0);
         string message = serialController.ReadSerialMessage();
 
         if (message == null)

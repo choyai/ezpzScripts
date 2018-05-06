@@ -64,8 +64,50 @@ void Start(){
 // Update is called once per frame
 void Update()
 {
-//This one checks the state of the ofdjfoe
+        if(correct && correctplayed) {
+                switch(GameControl.CurrentAnimal) {
+                case "Bear":
+                        serialController.SendSerialMessage("R");
+                        if(videoPlayer.time == 25f || videoPlayer.time == 33f) {
+                                serialController.SendSerialMessage("V");
+                                serialController.SendSerialMessage("F");
+                        }
+                        if(videoPlayer.time == 26f || videoPlayer.time == 35f) {
+                                serialController.SendSerialMessage("v");
+                                serialController.SendSerialMessage("f");
+                        }
+                        break;
+                case "Elephant":
+                        serialController.SendSerialMessage("B");
+                        if(videoPlayer.time == 25.5f || videoPlayer.time == 32f) {
+                                serialController.SendSerialMessage("V");
+                                serialController.SendSerialMessage("F");
+                        }
+                        if(videoPlayer.time == 26.5f || videoPlayer.time == 34f) {
+                                serialController.SendSerialMessage("v");
+                                serialController.SendSerialMessage("f");
+                        }
+                        if(videoPlayer.time == 32f) {
+                                serialController.SendSerialMessage("E");
+                        }
+                        break;
+                case "Lion":
+                        serialController.SendSerialMessage("P");
+                        if(videoPlayer.time == 29f || videoPlayer.time == 35f) {
+                                serialController.SendSerialMessage("V");
+                                serialController.SendSerialMessage("F");
+                        }
+                        if(videoPlayer.time == 31.5f) {
+                                serialController.SendSerialMessage("v");
+                                serialController.SendSerialMessage("f");
+                        }
+                        break;
+                }
+        }
+        //This one checks the state of the ofdjfoe
+
         string message = serialController.ReadSerialMessage();
+
 
         if (message == null)
                 return;
@@ -78,6 +120,8 @@ void Update()
         else
                 Debug.Log("Message arrived: " + message);
         InputHandler(message);
+
+
 }
 
 public IEnumerator LoadNextScene(string sceneName)
@@ -130,7 +174,7 @@ private void OnGUI()
 public void InputHandler(string data)
 {
         // Debug.Log("yo");
-        // Debug.Log(data);
+        Debug.Log(data);
 
 
         //GameControl.Button1Count = data[0];
@@ -173,6 +217,7 @@ public void InputHandler(string data)
                         videoPlayer.url = "Assets/Movies/" + GameControl.CurrentAnimal + "Correct" + ".mp4";
                         audioSource = GameObject.Find(GameControl.CurrentAnimal + "Correct").GetComponent<AudioSource>();
                         videoPlayer.loopPointReached -= LoopClipEndReached;
+                        videoPlayer.prepareCompleted -= Prepared;
                         videoPlayer.prepareCompleted += PreparedAns;
                         videoPlayer.loopPointReached += ansEndReached;
                         videoPlayer.Prepare();
@@ -188,7 +233,8 @@ public void InputHandler(string data)
                         videoPlayer.Prepare();
                 }
         }
-        else {
+
+        else if (data != "b1" && data != "b2" && data != "b3" && data != "b4" && data != "b5") {
                 correct = false;
                 answered = true;
                 serialController.SendSerialMessage("i");
@@ -233,7 +279,7 @@ async void Prepared(UnityEngine.Video.VideoPlayer vp){
         if(!audioSource.isPlaying) {
                 audioSource.Play();
         }
-        vp.loopPointReached -= Prepared;
+        vp.prepareCompleted -= Prepared;
 }
 
 async void PreparedAns(UnityEngine.Video.VideoPlayer vp){
@@ -241,12 +287,7 @@ async void PreparedAns(UnityEngine.Video.VideoPlayer vp){
         vp.Play();
         audioSource.Play();
         videoPlayer.prepareCompleted -= PreparedAns;
-        if(correct && correctplayed) {
-                switch(GameControl.CurrentAnimal) {
-                case "":
-                        break;
-                }
-        }
+
 }
 
 void LoopClipEndReached(UnityEngine.Video.VideoPlayer vp){
