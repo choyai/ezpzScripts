@@ -49,6 +49,7 @@ void Start(){
         // Will attach a VideoPlayer to the main camera.
         GameObject camera = GameObject.Find("Main Camera");
         videoPlayer = camera.AddComponent<UnityEngine.Video.VideoPlayer>();
+        DontDestroyOnLoad(camera);
         videoPlayer.playOnAwake = false;
 
         index = rand.Next(0, LoopScenes.Count);
@@ -106,7 +107,6 @@ void Update()
                 }
         }
         else if (correct && !correctplayed) {
-                new WaitForSeconds(1);
                 serialController.SendSerialMessage("c");
                 serialController.SendSerialMessage("1");
         }
@@ -345,6 +345,7 @@ void RandomAgain(UnityEngine.Video.VideoPlayer vp){
                 SceneManager.LoadScene(GameControl.CurrentAnimal + "Mini");
         }
         else{
+                vp.renderMode = UnityEngine.Video.VideoRenderMode.CameraFarPlane;
                 SceneManager.LoadScene("PressButton");
         }
 
