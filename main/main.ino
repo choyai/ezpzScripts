@@ -20,7 +20,7 @@ int ledred_pin = 2, ledgreen_pin = 3,ledblue_pin = 4; //led rgb pin
 int fan_pin = 34; //fan pin
 int led1_pin = 22,led2_pin = 24,led3_pin = 26; //led pin
 int bubble_pin = 28; //bubble pin
-int uv_pin = 53; // uv pin
+int uv_pin = 40; // uv pin
 int vi_pin = 30;
 int b1_pin = 39,b2_pin = 41, b3_pin = 43, b4_pin = 45, b5_pin = 47, b6_pin = 49;
 int output_pin[10] = {ledred_pin, ledgreen_pin,ledblue_pin,fan_pin,led1_pin,led2_pin,led3_pin,bubble_pin,uv_pin,vi_pin};
